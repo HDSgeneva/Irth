@@ -1,0 +1,2276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Irth — إرث · Product Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   IRTH DESIGN SYSTEM — "majlis at dusk"
+   Tokens are the single source of truth. Flutter theme maps 1:1.
+   ============================================================ */
+:root{
+  /* brand */
+  --ghaf-900:#173A2F; --ghaf-700:#2E5E4E; --ghaf-500:#4A806C; --ghaf-100:#DCE8E2;
+  /* ground */
+  --sand-50:#F7F2E9; --sand-100:#EFE7D9; --surface:#FFFFFF;
+  /* ink */
+  --ink-900:#171A18; --ink-600:#5C635E; --ink-300:#A8AEA9;
+  /* semantic */
+  --dana-500:#C8A24A; --amber-500:#E0913A; --khor-500:#2F6F8F;
+  --nida-500:#C0463C; --success:#3F8F5F;
+  /* derived app surfaces */
+  --app-bg:var(--sand-50); --app-surface:var(--surface); --app-band:var(--sand-100);
+  --app-ink:var(--ink-900); --app-ink-2:var(--ink-600); --app-ink-3:var(--ink-300);
+  --app-line:#E4DACA; --app-brand:var(--ghaf-700);
+  --hairline:rgba(23,58,47,.10);
+  /* type */
+  --f-ui:"IBM Plex Sans Arabic",system-ui,sans-serif;
+  --f-ar:"Reem Kufi","IBM Plex Sans Arabic",sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,monospace;
+  /* radii + motion */
+  --r-s:8px; --r-m:14px; --r-l:22px; --r-xl:30px;
+  --ease:cubic-bezier(.22,.72,.28,1);
+}
+[data-theme="dark"]{
+  --app-bg:#12100D; --app-surface:#1C1A16; --app-band:#232019;
+  --app-ink:#F2EFE8; --app-ink-2:#A9A399; --app-ink-3:#6E6860;
+  --app-line:#2E2A22; --app-brand:#4A806C; --dana-500:#D4B160;
+  --ghaf-100:#24352E; --hairline:rgba(242,239,232,.10);
+}
+
+/* ============================================================
+   DOCUMENT CHROME (the spec sheet, not the app)
+   ============================================================ */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:#0E1512; color:#E8E4DA;
+  font-family:var(--f-ui); font-size:15px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{display:grid; grid-template-columns:236px minmax(0,1fr); align-items:start}
+@media(max-width:900px){ .wrap{grid-template-columns:1fr} }
+
+/* --- sadu band: the one decorative device, used only as a document rule --- */
+.sadu{height:9px; width:100%;
+  background:
+    repeating-linear-gradient(90deg,
+      var(--dana-500) 0 6px, transparent 6px 12px),
+    repeating-linear-gradient(90deg,
+      var(--ghaf-500) 0 2px, transparent 2px 6px,
+      var(--nida-500) 6px 8px, transparent 8px 12px);
+  opacity:.85;
+}
+
+/* --- left rail --- */
+.rail{position:sticky; top:0; height:100vh; overflow-y:auto; padding:26px 20px 40px;
+  border-right:1px solid rgba(255,255,255,.07); background:#0B1210}
+@media(max-width:900px){ .rail{position:static; height:auto; border-right:0;
+  border-bottom:1px solid rgba(255,255,255,.07)} }
+.mark{display:flex; align-items:baseline; gap:9px; margin-bottom:4px}
+.mark b{font-family:var(--f-ar); font-size:26px; font-weight:600; color:#F2EFE8; letter-spacing:.01em}
+.mark span{font-family:var(--f-ar); font-size:22px; color:var(--dana-500)}
+.rail .sub{font-size:11.5px; color:#7C8A84; letter-spacing:.09em; text-transform:uppercase; margin-bottom:24px}
+.rail h4{font-size:10.5px; letter-spacing:.13em; text-transform:uppercase; color:#5F6E68;
+  margin:20px 0 7px; font-weight:600}
+.rail a{display:block; color:#B9C4BF; text-decoration:none; font-size:13.5px; padding:4px 9px;
+  border-radius:7px; border-left:2px solid transparent; margin-left:-9px}
+.rail a:hover{background:rgba(255,255,255,.05); color:#fff}
+.rail a.on{border-left-color:var(--dana-500); color:#fff; background:rgba(200,162,74,.09)}
+
+/* --- toggles --- */
+.toggles{display:flex; gap:6px; margin-top:26px; padding-top:18px;
+  border-top:1px solid rgba(255,255,255,.08)}
+.tgl{flex:1; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+  color:#C9D2CE; font-family:var(--f-ui); font-size:12px; font-weight:500;
+  padding:8px 6px; border-radius:9px; cursor:pointer; transition:.18s var(--ease)}
+.tgl:hover{background:rgba(255,255,255,.11)}
+.tgl[aria-pressed="true"]{background:var(--dana-500); border-color:var(--dana-500); color:#1A1408}
+.tgl:focus-visible{outline:2px solid var(--dana-500); outline-offset:2px}
+
+/* --- main --- */
+main{padding:0 0 90px; min-width:0}
+.masthead{padding:56px 44px 40px; border-bottom:1px solid rgba(255,255,255,.08)}
+@media(max-width:640px){ .masthead{padding:36px 20px 28px} }
+.masthead .kicker{font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--dana-500); font-weight:600; margin-bottom:14px}
+.masthead h1{font-family:var(--f-ar); font-size:clamp(38px,6vw,66px); line-height:1.02;
+  margin:0 0 6px; font-weight:500; color:#fff}
+.masthead h1 em{font-style:normal; color:var(--dana-500)}
+.masthead p{max-width:60ch; color:#9DABA5; font-size:16px; margin:16px 0 0}
+.facts{display:flex; flex-wrap:wrap; gap:26px; margin-top:30px}
+.fact .n{font-family:var(--f-num); font-size:21px; color:#fff; font-weight:500}
+.fact .l{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:#6E7D77; margin-top:2px}
+
+section{padding:52px 44px 8px; scroll-margin-top:14px}
+@media(max-width:640px){ section{padding:38px 20px 8px} }
+.sechead{display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap;
+  border-bottom:1px solid rgba(255,255,255,.09); padding-bottom:14px; margin-bottom:8px}
+.sechead .idx{font-family:var(--f-num); font-size:12px; color:var(--dana-500); font-weight:500}
+.sechead h2{font-family:var(--f-ar); font-size:30px; font-weight:500; margin:0; color:#fff}
+.sechead h2 .ar{color:var(--dana-500); font-size:24px; margin-inline-start:8px}
+.sechead p{margin:0 0 2px; color:#8E9C96; font-size:14px; flex:1 1 320px}
+
+/* --- screen grid --- */
+.grid{display:grid; gap:38px 30px; padding:34px 0 6px;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+.slot{min-width:0}
+.cap{margin-top:15px}
+.cap .t{display:flex; align-items:center; gap:8px; font-size:14px; font-weight:600; color:#F0EDE6}
+.cap .id{font-family:var(--f-num); font-size:11px; color:#66756F}
+.cap .d{font-size:13px; color:#8B9992; margin-top:5px; line-height:1.5}
+.cap .d b{color:#C4CFCA; font-weight:600}
+.pill{display:inline-block; font-size:10px; letter-spacing:.09em; text-transform:uppercase;
+  font-weight:600; padding:2px 7px; border-radius:5px}
+.p-roots{background:rgba(74,128,108,.22); color:#8FCBB2}
+.p-bonds{background:rgba(47,111,143,.22); color:#8CC4E0}
+.p-branch{background:rgba(200,162,74,.18); color:#DEBC72}
+.p-sys{background:rgba(255,255,255,.09); color:#A9B5B0}
+
+/* ============================================================
+   PHONE FRAME + APP COMPONENTS
+   ============================================================ */
+.phone{width:100%; max-width:372px; margin:0 auto; aspect-ratio:372/790;
+  background:var(--app-bg); color:var(--app-ink);
+  border-radius:38px; border:1px solid var(--app-line); overflow:hidden;
+  display:flex; flex-direction:column; position:relative;
+  box-shadow:0 26px 60px -22px rgba(0,0,0,.75), 0 0 0 8px #191F1C, 0 0 0 9px #2C3733;
+  font-size:14px; line-height:1.45}
+.phone *{min-width:0}
+
+.status{display:flex; justify-content:space-between; align-items:center;
+  padding:13px 22px 5px; font-size:11.5px; font-weight:600; font-family:var(--f-num);
+  color:var(--app-ink); flex:0 0 auto}
+.status .bars{display:flex; gap:3px; align-items:flex-end}
+.status .bars i{width:3px; background:currentColor; border-radius:1px; display:block}
+.status .bars i:nth-child(1){height:4px} .status .bars i:nth-child(2){height:6px}
+.status .bars i:nth-child(3){height:8px} .status .bars i:nth-child(4){height:10px; opacity:.35}
+
+.screen{flex:1 1 auto; overflow:hidden; display:flex; flex-direction:column;
+  padding:6px 18px 0; position:relative}
+.screen.flush{padding-inline:0}
+.screen.pad-b{padding-bottom:16px}
+.scroll{flex:1 1 auto; overflow:hidden; display:flex; flex-direction:column; gap:12px}
+
+/* headers */
+.apphead{display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:8px 0 4px; flex:0 0 auto}
+.apphead h1{font-family:var(--f-ar); font-size:23px; font-weight:500; margin:0; letter-spacing:.005em}
+.apphead .sm{font-size:12px; color:var(--app-ink-2); margin-top:1px}
+.back{width:32px; height:32px; border-radius:50%; background:var(--app-band);
+  display:grid; place-items:center; color:var(--app-ink-2); font-size:15px; flex:0 0 auto}
+
+.eyebrow{font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--app-ink-3); font-weight:600}
+
+/* cards */
+.card{background:var(--app-surface); border:1px solid var(--app-line);
+  border-radius:var(--r-l); padding:15px 16px}
+.card.tight{padding:12px 13px; border-radius:var(--r-m)}
+.card.flat{background:var(--app-band); border-color:transparent}
+.card.brand{background:var(--app-brand); border-color:transparent; color:#F4F8F6}
+.card.brand .sub, .card.brand .app-ink-2{color:rgba(244,248,246,.72)}
+
+.row{display:flex; align-items:center; gap:11px}
+.row.top{align-items:flex-start}
+.grow{flex:1 1 auto; min-width:0}
+.stack{display:flex; flex-direction:column; gap:10px}
+.stack.s{gap:6px}
+.trunc{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+
+.t-lg{font-size:17px; font-weight:600; letter-spacing:-.01em}
+.t-md{font-size:14.5px; font-weight:600}
+.t-sm{font-size:13px}
+.sub{font-size:12.5px; color:var(--app-ink-2); line-height:1.4}
+.xs{font-size:11px; color:var(--app-ink-3)}
+.num{font-family:var(--f-num); font-variant-numeric:tabular-nums}
+.ar{font-family:var(--f-ar)}
+
+/* avatars */
+.av{width:38px; height:38px; border-radius:50%; flex:0 0 auto; display:grid; place-items:center;
+  font-size:13px; font-weight:600; color:#fff; font-family:var(--f-ui)}
+.av.s{width:28px; height:28px; font-size:11px}
+.av.l{width:52px; height:52px; font-size:17px}
+.av.xl{width:74px; height:74px; font-size:24px}
+.a1{background:#4A806C} .a2{background:#B07C4A} .a3{background:#2F6F8F}
+.a4{background:#8A5A7A} .a5{background:#6B7A3A} .a6{background:#A6603E}
+.stackav{display:flex}
+.stackav .av{margin-inline-start:-9px; border:2px solid var(--app-surface)}
+.stackav .av:first-child{margin-inline-start:0}
+
+/* buttons */
+.btn{display:flex; align-items:center; justify-content:center; gap:8px;
+  background:var(--app-brand); color:#F4F8F6; border:0; border-radius:var(--r-m);
+  padding:13px 18px; font-family:var(--f-ui); font-size:14.5px; font-weight:600; width:100%}
+.btn.ghost{background:transparent; color:var(--app-brand); border:1.5px solid var(--app-brand)}
+.btn.quiet{background:var(--app-band); color:var(--app-ink)}
+.btn.dana{background:var(--dana-500); color:#231A05}
+.btn.nida{background:var(--nida-500); color:#fff}
+.btn.sm{padding:9px 14px; font-size:13px; border-radius:10px; width:auto}
+
+.chip{display:inline-flex; align-items:center; gap:5px; padding:5px 10px; border-radius:999px;
+  background:var(--app-band); color:var(--app-ink-2); font-size:11.5px; font-weight:500; white-space:nowrap}
+.chip.on{background:var(--ghaf-100); color:var(--app-brand); font-weight:600}
+.chip.dana{background:rgba(200,162,74,.16); color:#8A6D20; font-weight:600}
+[data-theme="dark"] .chip.dana{color:var(--dana-500)}
+.chip.nida{background:rgba(192,70,60,.13); color:var(--nida-500); font-weight:600}
+.chip.amber{background:rgba(224,145,58,.15); color:#A5641E; font-weight:600}
+[data-theme="dark"] .chip.amber{color:var(--amber-500)}
+.chip.khor{background:rgba(47,111,143,.14); color:var(--khor-500); font-weight:600}
+.chips{display:flex; gap:6px; flex-wrap:wrap}
+
+.dot{width:7px; height:7px; border-radius:50%; background:var(--success); flex:0 0 auto}
+.dot.n{background:var(--nida-500)} .dot.a{background:var(--amber-500)}
+.dot.k{background:var(--khor-500)} .dot.d{background:var(--dana-500)}
+
+/* progress */
+.bar{height:6px; border-radius:99px; background:var(--app-band); overflow:hidden}
+.bar i{display:block; height:100%; background:var(--app-brand); border-radius:99px}
+.bar i.dana{background:var(--dana-500)}
+
+/* tab bar */
+.tabbar{flex:0 0 auto; display:flex; justify-content:space-around; align-items:center;
+  padding:9px 8px 6px; border-top:1px solid var(--app-line); background:var(--app-surface)}
+.tab{display:flex; flex-direction:column; align-items:center; gap:3px; flex:1;
+  color:var(--app-ink-3); font-size:9.5px; font-weight:600; letter-spacing:.02em; position:relative}
+.tab svg{width:21px; height:21px; stroke:currentColor; fill:none; stroke-width:1.7;
+  stroke-linecap:round; stroke-linejoin:round}
+.tab.on{color:var(--app-brand)}
+.tab .badge{position:absolute; top:-2px; inset-inline-end:22%; width:7px; height:7px;
+  border-radius:50%; background:var(--nida-500)}
+.home-ind{height:16px; display:grid; place-items:center; background:var(--app-surface); flex:0 0 auto}
+.home-ind i{width:112px; height:4px; border-radius:99px; background:var(--app-ink-3); opacity:.5; display:block}
+
+/* misc app bits */
+.divider{height:1px; background:var(--app-line); margin:2px 0}
+.listrow{display:flex; align-items:center; gap:11px; padding:10px 0}
+.listrow + .listrow{border-top:1px solid var(--app-line)}
+.kv{display:flex; justify-content:space-between; gap:10px; font-size:13px; padding:6px 0}
+.kv + .kv{border-top:1px solid var(--app-line)}
+.kv .k{color:var(--app-ink-2)}
+.kv .v{font-weight:600; text-align:end}
+
+.badge-tier{font-size:9.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  padding:3px 7px; border-radius:5px}
+.tier1{background:var(--app-band); color:var(--app-ink-2)}
+.tier2{background:rgba(224,145,58,.18); color:#96591A}
+[data-theme="dark"] .tier2{color:var(--amber-500)}
+.tier3{background:var(--nida-500); color:#fff}
+
+/* the ghaf tree */
+.tree{display:block; width:100%; height:auto}
+.tree .canopy{fill:var(--ghaf-500); opacity:.9}
+.tree .canopy2{fill:var(--ghaf-700)}
+.tree .trunk{stroke:#6B5238; stroke-linecap:round; fill:none}
+[data-theme="dark"] .tree .trunk{stroke:#8A6C4B}
+.tree .spark{fill:var(--dana-500)}
+.tree .ground{stroke:var(--app-line); stroke-width:1.5; stroke-linecap:round}
+
+/* RTL */
+[dir="rtl"] .phone{font-family:var(--f-ui)}
+[dir="rtl"] .apphead h1{font-family:var(--f-ar)}
+</style>
+</head>
+<body>
+<div class="sadu"></div>
+<div class="wrap">
+<nav class="rail">
+  <div class="mark"><b>Irth</b><span>إرث</span></div>
+  <div class="sub">Product design · v1</div>
+
+  <h4>Reference</h4>
+  <a href="#tokens">Design system</a>
+
+  <h4>Flows</h4>
+  <a href="#enter">1 · Getting in</a>
+  <a href="#home">2 · Home &amp; the tree</a>
+  <a href="#roots">3 · Roots جذور</a>
+  <a href="#bonds">4 · Bonds روابط</a>
+  <a href="#branches">5 · Branches فروع</a>
+  <a href="#system">6 · Identity &amp; trust</a>
+  <a href="#rtl">7 · Arabic &amp; RTL</a>
+  <a href="#build">8 · Build notes</a>
+
+  <div class="toggles">
+    <button class="tgl" id="tTheme" aria-pressed="false">Dark</button>
+    <button class="tgl" id="tGrid" aria-pressed="false">Wide</button>
+  </div>
+  <p style="font-size:11.5px;color:#61706A;margin-top:14px;line-height:1.5">
+    Dark mode is the app's default after sunset — story listening skews evening.
+  </p>
+</nav>
+
+<main>
+<header class="masthead">
+  <div class="kicker">SMAC 2026 · Khalifa University</div>
+  <h1>A family's memory,<br>made <em>playable</em>.</h1>
+  <p>Thirty-one screens across three pillars — Roots, Bonds, Branches — held together by one
+     shared object: the Ghaf Tree. Every token below maps 1:1 to a Flutter <span class="num">ThemeData</span>
+     entry, so this document is the handoff, not a mood board.</p>
+  <div class="facts">
+    <div class="fact"><div class="n">31</div><div class="l">Screens</div></div>
+    <div class="fact"><div class="n">12</div><div class="l">MUST features</div></div>
+    <div class="fact"><div class="n">2</div><div class="l">Builders</div></div>
+    <div class="fact"><div class="n">5</div><div class="l">Weeks to submit</div></div>
+    <div class="fact"><div class="n">AR / EN</div><div class="l">Full RTL</div></div>
+  </div>
+</header>
+
+<!-- ══════════════ DESIGN SYSTEM ══════════════ -->
+<section id="tokens">
+  <div class="sechead">
+    <span class="idx">00</span>
+    <h2>Design system</h2>
+    <p>Direction: <b style="color:#C9D3CF">majlis at dusk</b>. Warm, unhurried, textile-informed.
+       Reference points are a sadu-woven cushion, a sand wall at golden hour, and the deep green of
+       a ghaf at the edge of a farm. Content is the hero — voices, faces, the tree.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;padding:30px 0 10px">
+
+    <div>
+      <div class="eyebrow" style="color:#7A8983;margin-bottom:12px">Colour</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:9px">
+        <div><div style="height:52px;border-radius:9px;background:#173A2F"></div><div class="num" style="font-size:11px;color:#93A19B;margin-top:5px">ghaf-900</div></div>
+        <div><div style="height:52px;border-radius:9px;background:#2E5E4E;outline:1.5px solid #C8A24A"></div><div class="num" style="font-size:11px;color:#DEBC72;margin-top:5px">ghaf-700 ★</div></div>
+        <div><div style="height:52px;border-radius:9px;background:#4A806C"></div><div class="num" style="font-size:11px;color:#93A19B;margin-top:5px">ghaf-500</div></div>
+        <div><div style="height:52px;border-radius:9px;background:#DCE8E2"></div><div class="num" style="font-size:11px;color:#93A19B;margin-top:5px">ghaf-100</div></div>
+        <div><div style="height:52px;border-radius:9px;background:#F7F2E9;outline:1.5px solid #C8A24A"></div><div class="num" style="font-size:11px;color:#DEBC72;margin-top:5px">sand-50 ★</div></div>
+        <div><div style="height:52px;border-radius:9px;background:#EFE7D9"></div><div class="num" style="font-size:11px;color:#93A19B;margin-top:5px">sand-100</div></div>
+        <div><div style="height:52px;border-radius:9px;background:#C8A24A;outline:1.5px solid #C8A24A"></div><div class="num" style="font-size:11px;color:#DEBC72;margin-top:5px">dana-500 ★</div></div>
+        <div><div style="height:52px;border-radius:9px;background:#E0913A"></div><div class="num" style="font-size:11px;color:#93A19B;margin-top:5px">amber-500</div></div>
+        <div><div style="height:52px;border-radius:9px;background:#2F6F8F"></div><div class="num" style="font-size:11px;color:#93A19B;margin-top:5px">khor-500</div></div>
+        <div><div style="height:52px;border-radius:9px;background:#C0463C"></div><div class="num" style="font-size:11px;color:#93A19B;margin-top:5px">nida-500</div></div>
+        <div><div style="height:52px;border-radius:9px;background:#3F8F5F"></div><div class="num" style="font-size:11px;color:#93A19B;margin-top:5px">success</div></div>
+        <div><div style="height:52px;border-radius:9px;background:#171A18;border:1px solid #2B322E"></div><div class="num" style="font-size:11px;color:#93A19B;margin-top:5px">ink-900</div></div>
+      </div>
+      <p style="font-size:13px;color:#8B9992;margin-top:14px;line-height:1.6">
+        Two rules, and they are not negotiable. <b style="color:#E58B82">nida-500 appears in exactly one
+        context</b> — a Tier-3 urgent alert — so that seeing red in this app always means something.
+        <b style="color:#DEBC72">dana-500 is for earned moments only</b>; keep it scarce and it keeps
+        feeling like a reward.
+      </p>
+    </div>
+
+    <div>
+      <div class="eyebrow" style="color:#7A8983;margin-bottom:12px">Type</div>
+      <div style="background:#F7F2E9;color:#171A18;border-radius:16px;padding:20px 22px">
+        <div style="font-family:var(--f-ar);font-size:34px;font-weight:500;line-height:1.1">مجلس · Majlis</div>
+        <div style="font-size:11px;color:#5C635E;margin-top:2px;font-family:var(--f-num)">Reem Kufi 500 · display &amp; wordmark</div>
+        <div style="height:1px;background:#E4DACA;margin:16px 0"></div>
+        <div style="font-size:23px;font-weight:600;letter-spacing:-.015em">Tell us about the first house</div>
+        <div style="font-size:15px;margin-top:4px">Body text sets at 15/1.5 — the ramp starts here and never goes below 12.</div>
+        <div style="font-size:12.5px;color:#5C635E;margin-top:4px">Secondary at 12.5, ink-600.</div>
+        <div style="font-family:var(--f-num);font-size:13px;margin-top:8px">1,240 dana · 04:32 · 12 Mar 1968</div>
+        <div style="font-size:11px;color:#5C635E;margin-top:8px;font-family:var(--f-num)">IBM Plex Sans Arabic · IBM Plex Mono for anything countable</div>
+      </div>
+      <p style="font-size:13px;color:#8B9992;margin-top:14px;line-height:1.6">
+        Reem Kufi carries the personality because it should be the <b style="color:#C4CFCA">Arabic</b>
+        that feels authored, not a Latin display face doing heritage cosplay. Plex Sans Arabic covers
+        both scripts from one skeleton, so a bilingual screen never looks like two designs stapled
+        together. Plex Mono handles dana counts, times, and dates — tabular figures stop numbers
+        jittering as they tick up.
+      </p>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;padding:14px 0 8px">
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 18px">
+      <div class="eyebrow" style="color:#DEBC72">Elder Mode</div>
+      <p style="font-size:13px;color:#9DABA5;margin:8px 0 0;line-height:1.55">Type ramp ×1.35, min touch
+      target 56px, one primary action per screen, no nested navigation. Set per member, not per device.</p>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 18px">
+      <div class="eyebrow" style="color:#8FCBB2">Motion</div>
+      <p style="font-size:13px;color:#9DABA5;margin:8px 0 0;line-height:1.55">220ms, ease
+      <span class="num">(.22,.72,.28,1)</span>. The tree is the only thing that animates for longer —
+      1.4s on level-up. Everything respects <span class="num">reduce-motion</span>.</p>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 18px">
+      <div class="eyebrow" style="color:#8CC4E0">Radii &amp; depth</div>
+      <p style="font-size:13px;color:#9DABA5;margin:8px 0 0;line-height:1.55">Cards 22px, controls 14px,
+      chips full. No drop shadows inside the app — separation comes from a 1px sand line. Shadow is
+      reserved for sheets that sit above the world.</p>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 18px">
+      <div class="eyebrow" style="color:#A9B5B0">Iconography</div>
+      <p style="font-size:13px;color:#9DABA5;margin:8px 0 0;line-height:1.55">1.7px stroke, rounded
+      caps, 24px grid. Outline by default; filled only for the active tab. Never icon-only for a
+      destructive or a Tier-3 action — those always carry a word.</p>
+    </div>
+  </div>
+</section>
+<!-- ══════════════ 1 · GETTING IN ══════════════ -->
+<section id="enter">
+  <div class="sechead">
+    <span class="idx">01</span>
+    <h2>Getting in</h2>
+    <p>The adoption unit is the family, not the person. Every screen here exists to move a household
+       from two members to seven — and to make the closed graph legible before anyone records anything.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- A1 -->
+    <div class="slot">
+      <div class="phone" style="--ghaf-500:#9DC4B2;--ghaf-700:#7FB09B;--app-bg:#173A2F;--app-ink:#F7F2E9;--app-ink-2:rgba(247,242,233,.66);--app-line:rgba(247,242,233,.14)">
+        <div class="sb" data-light="1"></div>
+        <div class="screen" style="justify-content:center;align-items:center;text-align:center;padding-bottom:60px">
+          <div style="width:78%;opacity:.28;margin-bottom:6px">
+            <div class="tree-mount" data-plain="1"></div>
+          </div>
+          <div class="ar" style="font-size:64px;line-height:1;font-weight:500;color:#F7F2E9">إرث</div>
+          <div class="ar" style="font-size:27px;letter-spacing:.13em;margin-top:8px;color:var(--dana-500)">IRTH</div>
+          <p class="sub" style="max-width:24ch;margin-top:16px;font-size:14px;line-height:1.5">
+            What a family knows, kept where the family can reach it.</p>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">Opening <span class="id">A1</span></div>
+        <div class="d">The Arabic sets first and largest — this is an Emirati product, not a
+          translated one. <b>إرث</b> means inheritance in the sense of what's passed down, not what's
+          divided up. The ghaf behind it is the same tree that will later track the family's progress,
+          introduced here at 28% opacity so it's familiar before it's explained.</div>
+      </div>
+    </div>
+
+    <!-- A2 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen pad-b">
+          <div class="apphead"><div><h1>Join your family</h1></div></div>
+          <div class="stack" style="margin-top:6px">
+            <p class="sub" style="margin:0">Someone in your family sent you a code. Irth has no search
+              and no suggestions — a code is the only way in.</p>
+            <div class="row" style="gap:7px;margin-top:6px">
+              <div class="card tight num" style="flex:1;text-align:center;font-size:24px;font-weight:600;padding:14px 0">M</div>
+              <div class="card tight num" style="flex:1;text-align:center;font-size:24px;font-weight:600;padding:14px 0">7</div>
+              <div class="card tight num" style="flex:1;text-align:center;font-size:24px;font-weight:600;padding:14px 0">K</div>
+              <div class="card tight num" style="flex:1;text-align:center;font-size:24px;font-weight:600;padding:14px 0;border-color:var(--app-brand);border-width:1.5px">4</div>
+              <div class="card tight num" style="flex:1;text-align:center;font-size:24px;color:var(--app-ink-3);padding:14px 0">·</div>
+              <div class="card tight num" style="flex:1;text-align:center;font-size:24px;color:var(--app-ink-3);padding:14px 0">·</div>
+            </div>
+            <div class="card flat row" style="gap:10px;margin-top:4px">
+              <div class="av a1">M</div>
+              <div class="grow">
+                <div class="t-md">Al Mansoori</div>
+                <div class="xs">14 members · Abu Dhabi · started by Maryam</div>
+              </div>
+            </div>
+            <button class="btn" style="margin-top:2px">Join Al Mansoori</button>
+            <div class="row" style="gap:8px;align-items:flex-start;margin-top:2px">
+              <div style="color:var(--app-ink-3);font-size:13px">🔒</div>
+              <p class="xs" style="margin:0;line-height:1.5">Nothing you post here can leave this family.
+                No public profile, no discovery, no recommendations.</p>
+            </div>
+            <div class="divider" style="margin:6px 0"></div>
+            <button class="btn ghost">Start a new family instead</button>
+          </div>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">Join with a code <span class="id">A2</span></div>
+        <div class="d">The family card resolves live as the fourth character lands, so you know you're
+          joining the right household before you commit. The privacy line is placed <b>before</b> the
+          button, not buried in settings — it's the product's central promise and it costs one sentence.</div>
+      </div>
+    </div>
+
+    <!-- A3 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen pad-b">
+          <div class="apphead"><div class="back">←</div><div class="grow"><h1 style="font-size:20px">Your place</h1></div></div>
+          <div class="stack" style="margin-top:4px">
+            <p class="sub" style="margin:0">This sets what you can do, not how much you matter.
+              Maryam can change it later.</p>
+            <div class="card row top" style="border-color:var(--app-brand);border-width:1.5px;gap:12px">
+              <div class="av a1">R</div>
+              <div class="grow">
+                <div class="t-md">Member</div>
+                <div class="sub" style="margin-top:2px">Record, play, chat, RSVP, plan events.</div>
+              </div>
+              <div style="color:var(--app-brand);font-size:17px">✓</div>
+            </div>
+            <div class="card row top" style="gap:12px">
+              <div class="av a2">K</div>
+              <div class="grow">
+                <div class="t-md">Keeper</div>
+                <div class="sub" style="margin-top:2px">Everything a member can, plus invite people,
+                  edit the family tree, and set care responsibilities.</div>
+              </div>
+            </div>
+            <div class="card row top" style="gap:12px">
+              <div class="av a3">E</div>
+              <div class="grow">
+                <div class="t-md">Elder</div>
+                <div class="sub" style="margin-top:2px">Larger text, one action per screen, no streaks
+                  to lose. Can be turned on for anyone.</div>
+              </div>
+            </div>
+            <div class="card row top" style="gap:12px">
+              <div class="av a5">C</div>
+              <div class="grow">
+                <div class="t-md">Child</div>
+                <div class="sub" style="margin-top:2px">Linked to a guardian. Plays and listens.
+                  No direct messages, no location.</div>
+              </div>
+            </div>
+          </div>
+          <button class="btn" style="margin-top:12px">Continue</button>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">Choose a role <span class="id">A3</span></div>
+        <div class="d">Four roles, described by what they <b>let you do</b> rather than by rank —
+          "Elder" is a set of accommodations, not a demotion, and the copy says so. Guardian linking
+          for children is enforced here at the graph level, which is what keeps the minors policy
+          from being a promise in a privacy page.</div>
+      </div>
+    </div>
+
+    <!-- A4 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen pad-b" style="font-size:16px">
+          <div class="apphead"><div class="grow"><h1 style="font-size:26px">Before we record</h1></div></div>
+          <div class="stack" style="margin-top:8px;gap:14px">
+            <div class="card" style="padding:18px">
+              <div class="stack s" style="gap:12px">
+                <div class="row" style="gap:11px"><div class="dot"></div><div style="font-size:17px;line-height:1.4">Your voice is saved for your family only.</div></div>
+                <div class="row" style="gap:11px"><div class="dot"></div><div style="font-size:17px;line-height:1.4">Fourteen people can hear it. No one else.</div></div>
+                <div class="row" style="gap:11px"><div class="dot"></div><div style="font-size:17px;line-height:1.4">You can delete it at any time, and it is gone.</div></div>
+              </div>
+            </div>
+            <div class="card flat" style="padding:16px">
+              <div class="ar" style="font-size:19px;line-height:1.7;text-align:right;direction:rtl">
+                صوتك يُحفَظ لعائلتك فقط. أربعة عشر شخصًا يمكنهم سماعه. يمكنك حذفه في أي وقت.
+              </div>
+            </div>
+            <div class="row" style="gap:10px;justify-content:center;margin-top:2px">
+              <div class="chip">▶ Hear this read aloud</div>
+            </div>
+          </div>
+          <div class="stack" style="margin-top:14px">
+            <button class="btn" style="padding:18px;font-size:17px">Yes, I agree</button>
+            <button class="btn quiet" style="padding:16px;font-size:16px">Not now</button>
+          </div>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">Spoken consent <span class="id">A4</span></div>
+        <div class="d"><span class="pill p-sys">Elder Mode</span> Three sentences, short words, both
+          scripts, and a button to hear it read aloud in Arabic. Interview Mode cannot proceed on the
+          operator's tap alone — <b>this screen is shown to the elder and answered by the elder</b>.
+          If a judge asks one hard question about ethics, it will be this one, and this is the answer.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════ 2 · HOME ══════════════ -->
+<section id="home">
+  <div class="sechead">
+    <span class="idx">02</span>
+    <h2>Home &amp; the tree</h2>
+    <p>Three loosely related feature sets become one product because everything deposits into a single
+       shared object. The Ghaf Tree is the signature element — it is the only thing on the home screen
+       that belongs to everyone at once.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- B1 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen">
+          <div class="apphead">
+            <div class="grow"><h1>Al Mansoori</h1><div class="sm">Thursday · 14 of you</div></div>
+            <div class="chip dana num">✦ 1,240</div>
+          </div>
+          <div class="scroll">
+            <div class="card" style="padding:12px 14px 14px;background:linear-gradient(175deg,var(--ghaf-100),var(--app-surface) 62%)">
+              <div class="tree-mount"></div>
+              <div class="row" style="margin-top:2px">
+                <div class="grow">
+                  <div class="t-md">Level 4 · <span class="ar">غاف</span> Ghaf</div>
+                  <div class="xs">280 dana to <span class="ar">ظل</span> Ẓill — shade</div>
+                </div>
+                <div class="chip">6 levels</div>
+              </div>
+              <div class="bar" style="margin-top:9px"><i class="dana" style="width:64%"></i></div>
+            </div>
+
+            <div class="card brand">
+              <div class="row">
+                <div class="grow">
+                  <div class="eyebrow" style="color:rgba(244,248,246,.6)">This week's majlis</div>
+                  <div class="t-lg" style="margin-top:3px">5 questions from Jeddo Rashid</div>
+                  <div class="sub" style="margin-top:3px">9 have played · you haven't</div>
+                </div>
+              </div>
+              <button class="btn dana" style="margin-top:12px">Play the round</button>
+            </div>
+
+            <div>
+              <div class="eyebrow" style="margin-bottom:7px">Waiting on you</div>
+              <div class="card tight" style="padding:0 13px">
+                <div class="listrow">
+                  <span class="badge-tier tier2">Muhim</span>
+                  <div class="grow"><div class="t-sm" style="font-weight:600">Umm Rashid needs her pills collected</div>
+                    <div class="xs">Noura asked · 40 min ago</div></div>
+                </div>
+                <div class="listrow">
+                  <span class="dot d"></span>
+                  <div class="grow"><div class="t-sm" style="font-weight:600">Confirm 3 names we heard</div>
+                    <div class="xs">From "The house in Al Ain"</div></div>
+                  <div class="chip dana num">+15</div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="eyebrow" style="margin-bottom:7px">Friday</div>
+              <div class="card tight row" style="gap:11px">
+                <div style="width:38px;text-align:center">
+                  <div class="num" style="font-size:17px;font-weight:600;line-height:1">2</div>
+                  <div class="xs">AUG</div>
+                </div>
+                <div class="grow"><div class="t-sm" style="font-weight:600">Lunch at Umm Rashid's</div>
+                  <div class="xs">1:30 pm · 11 going</div></div>
+                <div class="stackav">
+                  <div class="av s a2">K</div><div class="av s a4">N</div><div class="av s a5">S</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tb" data-on="home"></div>
+      </div>
+      <div class="cap">
+        <div class="t">Home <span class="id">B1</span></div>
+        <div class="d">Ordered by what the family needs from you, not by what the app wants to show.
+          The tree sits at the top because it's the only shared state; <b>"Waiting on you" is deliberately
+          short and always completable</b> — two items, never a backlog. Note the Tier-2 badge earns its
+          amber, and nothing here is red.</div>
+      </div>
+    </div>
+
+    <!-- B2 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen" style="font-size:17px">
+          <div class="apphead" style="padding-top:12px">
+            <div class="grow"><h1 style="font-size:30px">Good evening,<br>Jeddo</h1></div>
+          </div>
+          <div class="scroll" style="gap:16px;margin-top:8px">
+            <div class="card" style="padding:22px 20px;text-align:center">
+              <div style="font-size:19px;font-weight:600;line-height:1.35">Sara asked you a question</div>
+              <div class="sub" style="font-size:15px;margin-top:6px">"What was your father's work?"</div>
+              <button class="btn" style="margin-top:16px;padding:20px;font-size:19px;gap:11px">
+                <span style="font-size:22px">●</span> Answer with your voice</button>
+            </div>
+            <div class="card" style="padding:18px 20px">
+              <div class="row" style="gap:13px">
+                <div class="av l a5">S</div>
+                <div class="grow">
+                  <div style="font-size:17px;font-weight:600">Sara got it right</div>
+                  <div class="sub" style="font-size:15px;margin-top:2px">She knows about the pearl boats now.</div>
+                </div>
+              </div>
+            </div>
+            <div class="card flat" style="padding:18px 20px">
+              <div class="row" style="gap:13px">
+                <div style="font-size:22px">📞</div>
+                <div class="grow"><div style="font-size:17px;font-weight:600">Call Maryam</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tb" data-on="home" data-elder="1"></div>
+      </div>
+      <div class="cap">
+        <div class="t">Home, Elder Mode <span class="id">B2</span></div>
+        <div class="d"><span class="pill p-sys">Elder Mode</span> Same data, different contract. No
+          dana, no streak, no level, no badge — <b>elders never lose points and never break streaks</b>,
+          so showing them a score would be dishonest. The reward that replaced it is the one that
+          actually motivates a grandparent: <b>being listened to</b>. Three tabs instead of five.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+<!-- ══════════════ 3 · ROOTS ══════════════ -->
+<section id="roots">
+  <div class="sechead">
+    <span class="idx">03</span>
+    <h2>Roots <span class="ar">جذور</span></h2>
+    <p>A voice goes in; a family tree, a timeline, and a trivia round come out. This is the pillar the
+       whole pitch rests on, so the pipeline is shown to the user rather than hidden — every AI step
+       has a screen where a human can correct it.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- C1 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen pad-b" style="text-align:center">
+          <div class="apphead"><div class="back">✕</div><div class="grow"></div><div class="chip">Arabic ▾</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px">
+            <div class="card flat" style="text-align:start">
+              <div class="eyebrow">Prompt of the week</div>
+              <div class="t-lg" style="margin-top:5px;line-height:1.3">Tell us about the first house
+                you lived in.</div>
+              <div class="row" style="margin-top:9px;gap:6px"><div class="chip">Skip this</div><div class="chip">Just talk instead</div></div>
+            </div>
+            <div>
+              <div style="width:132px;height:132px;border-radius:50%;margin:0 auto;
+                background:var(--nida-500);display:grid;place-items:center;
+                box-shadow:0 0 0 10px rgba(192,70,60,.12), 0 0 0 22px rgba(192,70,60,.06)">
+                <div style="width:44px;height:44px;border-radius:12px;background:#fff"></div>
+              </div>
+              <div class="num" style="font-size:28px;font-weight:500;margin-top:18px">01:47</div>
+              <div class="xs" style="margin-top:2px">Most good stories run about two minutes</div>
+            </div>
+            <div style="display:flex;justify-content:center;gap:2px;align-items:center;height:34px">
+              <span style="display:block;width:3px;border-radius:2px;background:var(--app-brand);height:40%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:var(--app-brand);height:70%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:var(--app-brand);height:100%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:var(--app-brand);height:55%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:var(--app-brand);height:85%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:var(--app-brand);height:30%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:var(--app-brand);height:62%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:var(--app-brand);height:90%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:var(--app-brand);height:45%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:var(--app-ink-3);height:22%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:var(--app-ink-3);height:22%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:var(--app-ink-3);height:22%"></span>
+            </div>
+          </div>
+          <div class="row" style="gap:10px">
+            <button class="btn quiet">Start over</button>
+            <button class="btn">Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">Record a story <span class="id">C1</span></div>
+        <div class="d"><span class="pill p-roots">Roots</span> One button, no settings, no title field —
+          naming happens after, from the transcript. The soft nudge at two minutes is copy, not a
+          cutoff. Red appears here because it's the universal record affordance and reads as a
+          <b>control</b>, not an alert; it never sits next to a Tier-3 notification.</div>
+      </div>
+    </div>
+
+    <!-- C2 -->
+    <div class="slot">
+      <div class="phone" style="background:var(--ghaf-900);--app-ink:#F7F2E9;--app-ink-2:rgba(247,242,233,.72);--app-ink-3:rgba(247,242,233,.5);--app-line:rgba(247,242,233,.16)">
+        <div class="phone-inner" style="display:contents">
+        <div class="sb"></div>
+        <div class="screen pad-b" style="background:var(--ghaf-900);padding:6px 18px 16px;color:#F7F2E9">
+          <div class="apphead"><div class="chip" style="background:rgba(247,242,233,.14);color:#F7F2E9">Interview Mode</div>
+            <div class="grow"></div><div class="num" style="font-size:13px;color:rgba(247,242,233,.7)">03:12</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:20px;text-align:center">
+            <div>
+              <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dana-500);font-weight:600">Ask him</div>
+              <div class="ar" style="font-size:34px;line-height:1.5;margin-top:14px;direction:rtl">وشو كانت ريحة البيت؟</div>
+              <div style="font-size:20px;line-height:1.35;margin-top:8px;color:rgba(247,242,233,.85)">What did the house smell like?</div>
+            </div>
+            <div style="display:flex;justify-content:center;gap:3px;align-items:center;height:26px;opacity:.55">
+              <span style="display:block;width:3px;border-radius:2px;background:#F7F2E9;height:50%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:#F7F2E9;height:90%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:#F7F2E9;height:35%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:#F7F2E9;height:75%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:#F7F2E9;height:55%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:#F7F2E9;height:100%"></span>
+              <span style="display:block;width:3px;border-radius:2px;background:#F7F2E9;height:40%"></span>
+            </div>
+            <div style="border-top:1px solid rgba(247,242,233,.16);padding-top:16px">
+              <div class="xs" style="color:rgba(247,242,233,.5)">Next, if he pauses</div>
+              <div style="font-size:15px;margin-top:5px;color:rgba(247,242,233,.75)">Who else was there with you?</div>
+            </div>
+          </div>
+          <div class="row" style="gap:10px">
+            <button class="btn" style="background:rgba(247,242,233,.13);color:#F7F2E9">Ask something else</button>
+            <button class="btn dana">Finish</button>
+          </div>
+        </div>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">Interview Mode <span class="id">C2</span></div>
+        <div class="d"><span class="pill p-roots">Roots</span> <b>The most important screen in the app.</b>
+          A grandchild holds the phone; the grandparent just talks. Arabic sets at 34px because the
+          elder is reading it across a majlis, not holding it. Dusk-dark background so a phone lying
+          face-up between two people isn't a lamp. This removes elder tech adoption as a blocker
+          entirely — and it's Dubai CDA's <i>Generations in Majlis</i> format, one-to-one.</div>
+      </div>
+    </div>
+
+    <!-- C3 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen pad-b">
+          <div class="apphead"><div class="grow"><h1 style="font-size:21px">Working on it</h1>
+            <div class="sm">"The house in Al Ain" · 4:32</div></div></div>
+          <div class="stack" style="margin-top:12px;gap:0">
+            <div class="listrow" style="gap:13px">
+              <div style="color:var(--success);font-size:15px">✓</div>
+              <div class="grow"><div class="t-sm" style="font-weight:600">Listened and written down</div>
+                <div class="xs">Gulf Arabic · 96% confident</div></div>
+            </div>
+            <div class="listrow" style="gap:13px">
+              <div style="color:var(--success);font-size:15px">✓</div>
+              <div class="grow"><div class="t-sm" style="font-weight:600">Tidied and translated</div>
+                <div class="xs">English version ready</div></div>
+            </div>
+            <div class="listrow" style="gap:13px">
+              <div style="width:15px;height:15px;border-radius:50%;border:2px solid var(--app-brand);
+                border-top-color:transparent"></div>
+              <div class="grow"><div class="t-sm" style="font-weight:600">Finding people, places and years</div>
+                <div class="xs">7 found so far — you'll confirm these</div></div>
+            </div>
+            <div class="listrow" style="gap:13px">
+              <div style="color:var(--app-ink-3);font-size:15px">○</div>
+              <div class="grow"><div class="t-sm" style="color:var(--app-ink-2)">Writing questions for Friday</div></div>
+            </div>
+          </div>
+          <div class="card flat" style="margin-top:16px">
+            <div class="row" style="gap:9px;align-items:flex-start">
+              <div style="font-size:15px">⏸</div>
+              <div class="grow">
+                <div class="t-sm" style="font-weight:600">This runs overnight</div>
+                <div class="sub" style="margin-top:3px">Nothing here is urgent, so we batch it. You'll get
+                  one notification when the round is ready — not four as each step finishes.</div>
+              </div>
+            </div>
+          </div>
+          <div class="grow"></div>
+          <button class="btn quiet">Record another</button>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">Processing <span class="id">C3</span></div>
+        <div class="d"><span class="pill p-roots">Roots</span> The pipeline is the product, so it's
+          shown in the user's words — "listened and written down", not "ASR complete". Batching is
+          framed as a courtesy rather than a cost decision, which it also is: nothing in Roots is
+          real-time, and saying so out loud is what keeps the inference bill survivable.</div>
+      </div>
+    </div>
+
+    <!-- C4 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen pad-b">
+          <div class="apphead"><div class="back">←</div><div class="grow"><h1 style="font-size:20px">Did we hear right?</h1>
+            <div class="sm">3 of 7 · <span class="num">+15</span> dana</div></div></div>
+          <div class="card" style="margin-top:8px">
+            <div class="eyebrow">In the recording</div>
+            <p class="t-sm" style="margin:7px 0 0;line-height:1.6">"…and my uncle <b style="background:rgba(200,162,74,.28);padding:1px 3px;border-radius:3px">Saif</b>
+              built the majlis room himself, in <b style="background:rgba(200,162,74,.28);padding:1px 3px;border-radius:3px">sixty-eight</b>…"</p>
+            <div class="row" style="gap:7px;margin-top:9px">
+              <div class="chip">▶ 2:14</div><div class="chip">Hear it</div>
+            </div>
+          </div>
+          <div class="stack" style="margin-top:12px">
+            <div class="card tight">
+              <div class="row" style="gap:11px">
+                <div class="av a6">S</div>
+                <div class="grow"><div class="t-md">Saif Al Mansoori</div>
+                  <div class="xs">A person · Rashid's brother?</div></div>
+              </div>
+              <div class="row" style="gap:7px;margin-top:11px">
+                <button class="btn sm" style="flex:1">Yes, that's him</button>
+                <button class="btn sm quiet" style="flex:1">Someone else</button>
+              </div>
+            </div>
+            <div class="card tight">
+              <div class="row" style="gap:11px">
+                <div class="av a4" style="background:var(--khor-500)">68</div>
+                <div class="grow"><div class="t-md num">1968</div>
+                  <div class="xs">A year · low confidence</div></div>
+              </div>
+              <div class="row" style="gap:7px;margin-top:11px">
+                <button class="btn sm" style="flex:1">Correct</button>
+                <button class="btn sm quiet" style="flex:1">Fix</button>
+              </div>
+            </div>
+          </div>
+          <div class="grow"></div>
+          <div class="card flat tight">
+            <p class="xs" style="margin:0;line-height:1.5">Nothing joins the family tree until someone
+              says yes. We only ever suggest.</p>
+          </div>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">Confirm what we heard <span class="id">C4</span></div>
+        <div class="d"><span class="pill p-roots">Roots</span> The human-in-the-loop screen, and the
+          reason the tree stays trustworthy. <b>AI proposes, a person disposes</b> — extraction returns
+          confidence scores, and anything low arrives already flagged. Confirming pays dana, which is
+          how the least glamorous job in the app gets done at all.</div>
+      </div>
+    </div>
+
+    <!-- C5 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen pad-b">
+          <div class="apphead"><div class="back">←</div><div class="grow"></div><div class="chip">Arabic ⇄ English</div></div>
+          <div class="row" style="gap:11px;margin-top:6px">
+            <div class="av l a3">R</div>
+            <div class="grow"><div class="t-lg">The house in Al Ain</div>
+              <div class="xs">Jeddo Rashid · recorded by Sara · 4:32</div></div>
+          </div>
+          <div class="card" style="margin-top:12px;padding:13px 15px">
+            <div style="display:flex;gap:2px;align-items:flex-end;height:32px">
+              <span style="flex:1;background:var(--app-brand);height:40%;border-radius:1px"></span>
+              <span style="flex:1;background:var(--app-brand);height:75%;border-radius:1px"></span>
+              <span style="flex:1;background:var(--app-brand);height:55%;border-radius:1px"></span>
+              <span style="flex:1;background:var(--app-brand);height:95%;border-radius:1px"></span>
+              <span style="flex:1;background:var(--app-brand);height:62%;border-radius:1px"></span>
+              <span style="flex:1;background:var(--app-brand);height:80%;border-radius:1px"></span>
+              <span style="flex:1;background:var(--app-ink-3);height:45%;border-radius:1px"></span>
+              <span style="flex:1;background:var(--app-ink-3);height:70%;border-radius:1px"></span>
+              <span style="flex:1;background:var(--app-ink-3);height:35%;border-radius:1px"></span>
+              <span style="flex:1;background:var(--app-ink-3);height:58%;border-radius:1px"></span>
+              <span style="flex:1;background:var(--app-ink-3);height:82%;border-radius:1px"></span>
+              <span style="flex:1;background:var(--app-ink-3);height:40%;border-radius:1px"></span>
+            </div>
+            <div class="row" style="margin-top:10px;justify-content:space-between">
+              <span class="num xs">2:14</span>
+              <div class="row" style="gap:16px;font-size:17px"><span>↺</span>
+                <span style="width:38px;height:38px;border-radius:50%;background:var(--app-brand);
+                  color:#fff;display:grid;place-items:center;font-size:14px">❚❚</span><span>↻</span></div>
+              <span class="num xs">4:32</span>
+            </div>
+          </div>
+          <div class="stack s" style="margin-top:14px">
+            <div class="eyebrow">Along with his voice</div>
+            <p class="t-sm" style="margin:0;line-height:1.65;color:var(--app-ink-2)">My uncle Saif built
+              the majlis room himself, in sixty-eight…</p>
+            <p class="t-sm" style="margin:0;line-height:1.65;font-weight:600">…and every Friday the whole
+              road came to eat with us. My mother cooked for thirty people and never once complained.</p>
+          </div>
+          <div class="grow"></div>
+          <div class="chips" style="margin-bottom:10px">
+            <div class="chip khor">1968</div><div class="chip">Al Ain</div>
+            <div class="chip">Saif</div><div class="chip">Umm Rashid</div>
+          </div>
+          <div class="row" style="gap:8px">
+            <button class="btn quiet sm" style="flex:1">♡ 6</button>
+            <button class="btn quiet sm" style="flex:1">Reply with voice</button>
+          </div>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">Listening to a story <span class="id">C5</span></div>
+        <div class="d"><span class="pill p-roots">Roots</span> The transcript scrolls in time with the
+          audio and the current line is the only one at full weight — you follow along in Arabic while
+          reading English, or the reverse. Extracted entities sit at the bottom as chips that jump into
+          the tree, which is how a story quietly becomes structure.</div>
+      </div>
+    </div>
+
+    <!-- C6 -->
+    <div class="slot">
+      <div class="phone" style="background:var(--ghaf-700);--app-ink:#F7F2E9;--app-ink-2:rgba(247,242,233,.72);--app-ink-3:rgba(247,242,233,.5);--app-line:rgba(247,242,233,.16)">
+        <div class="sb"></div>
+        <div class="screen pad-b" style="background:var(--ghaf-700);padding:6px 18px 16px;color:#F4F8F6">
+          <div class="apphead">
+            <div class="chip" style="background:rgba(255,255,255,.16);color:#fff">Question 3 of 5</div>
+            <div class="grow"></div>
+            <div class="stackav"><div class="av s a2" style="border-color:var(--ghaf-700)">K</div>
+              <div class="av s a4" style="border-color:var(--ghaf-700)">N</div>
+              <div class="av s a5" style="border-color:var(--ghaf-700)">S</div></div>
+          </div>
+          <div style="height:4px;border-radius:99px;background:rgba(255,255,255,.2);margin-top:4px">
+            <i style="display:block;height:100%;width:60%;background:var(--dana-500);border-radius:99px"></i></div>
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px">
+            <div>
+              <div class="eyebrow" style="color:rgba(255,255,255,.6)">From Jeddo Rashid's story</div>
+              <div style="font-size:25px;font-weight:600;line-height:1.3;margin-top:8px">Who built the
+                majlis room in the Al Ain house?</div>
+            </div>
+            <div class="stack" style="gap:9px">
+              <div style="background:rgba(255,255,255,.12);border-radius:14px;padding:14px 16px;font-size:15px;font-weight:500">His uncle Saif</div>
+              <div style="background:rgba(255,255,255,.12);border-radius:14px;padding:14px 16px;font-size:15px;font-weight:500">His father</div>
+              <div style="background:rgba(255,255,255,.12);border-radius:14px;padding:14px 16px;font-size:15px;font-weight:500">A builder from Al Ain</div>
+              <div style="background:rgba(255,255,255,.12);border-radius:14px;padding:14px 16px;font-size:15px;font-weight:500">He built it himself</div>
+            </div>
+          </div>
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <div class="chip" style="background:rgba(255,255,255,.14);color:rgba(255,255,255,.85)">▶ Hear the bit</div>
+            <div class="xs" style="color:rgba(255,255,255,.6)">Jeddo can't play his own round</div>
+          </div>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">Majlis Play <span class="id">C6</span></div>
+        <div class="d"><span class="pill p-roots">Roots</span> Full-bleed brand green so the round feels
+          like a place you go, not a card you tap. "Hear the bit" plays the four seconds of grandpa's
+          actual voice containing the answer — the audio is the reward, the question is the excuse.
+          <b>The storyteller is excluded from their own round</b> by rule at generation time.</div>
+      </div>
+    </div>
+
+    <!-- C7 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen pad-b">
+          <div class="apphead"><div class="grow"><h1 style="font-size:21px">Friday's round</h1>
+            <div class="sm">11 of 14 played</div></div><div class="chip dana num">✦ +180</div></div>
+          <div class="card" style="margin-top:8px;background:linear-gradient(170deg,var(--ghaf-100),var(--app-surface) 70%)">
+            <div class="row" style="gap:12px">
+              <div class="av l a3">R</div>
+              <div class="grow"><div class="t-md">Your family knows you</div>
+                <div class="sub" style="margin-top:2px">9 of 11 got the majlis room right.</div></div>
+            </div>
+            <div class="bar" style="margin-top:12px"><i style="width:82%"></i></div>
+          </div>
+          <div class="stack s" style="margin-top:14px">
+            <div class="eyebrow">Everyone</div>
+            <div class="card tight" style="padding:2px 13px">
+              <div class="listrow"><div class="av s a5">S</div><div class="grow t-sm" style="font-weight:600">Sara</div>
+                <div class="num xs">5/5</div><div class="chip dana num">+40</div></div>
+              <div class="listrow"><div class="av s a2">K</div><div class="grow t-sm" style="font-weight:600">Khalid</div>
+                <div class="num xs">4/5</div><div class="chip dana num">+30</div></div>
+              <div class="listrow"><div class="av s a6">A</div><div class="grow t-sm" style="font-weight:600">Ahmed</div>
+                <div class="num xs">4/5</div><div class="chip dana num">+30</div></div>
+              <div class="listrow"><div class="av s a4">N</div><div class="grow t-sm" style="font-weight:600">Noura</div>
+                <div class="num xs">3/5</div><div class="chip dana num">+20</div></div>
+            </div>
+          </div>
+          <div class="card flat tight" style="margin-top:12px">
+            <div class="row" style="gap:9px;align-items:flex-start">
+              <div style="font-size:14px">🌱</div>
+              <p class="xs" style="margin:0;line-height:1.5">All 180 dana went to the family tree. There
+                is no leaderboard between families, and there never will be.</p>
+            </div>
+          </div>
+          <div class="grow"></div>
+          <button class="btn ghost">Ask Jeddo a follow-up</button>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">Round results <span class="id">C7</span></div>
+        <div class="d"><span class="pill p-roots">Roots</span> A list, ordered by score, but <b>everybody
+          scores and nobody ranks</b> — no medals, no "last place", no percentile. The headline metric is
+          about the storyteller ("your family knows you"), which redirects the competitive energy toward
+          the thing the product actually wants: another recording.</div>
+      </div>
+    </div>
+
+    <!-- C8 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen flush">
+          <div class="apphead" style="padding:8px 18px 4px">
+            <div class="grow"><h1 style="font-size:21px">Family tree</h1><div class="sm">31 people · 4 generations</div></div>
+            <div class="chip">＋</div>
+          </div>
+          <div style="flex:1;position:relative;background:var(--app-band);margin-top:6px;overflow:hidden">
+            <svg viewBox="0 0 340 420" style="width:100%;height:100%;display:block">
+              <g stroke="var(--app-ink-3)" stroke-width="1.3" fill="none" opacity=".6">
+                <path d="M110 78 V108 H230 V78 M170 108 V132"/>
+                <path d="M60 210 H280 M60 210 V186 M170 210 V186 M280 210 V186 M170 186 V162"/>
+                <path d="M105 320 H235 M105 320 V296 M235 320 V296 M170 296 V272"/>
+              </g>
+              <g stroke="var(--dana-500)" stroke-width="2.2" fill="none" stroke-dasharray="4 4" opacity=".9">
+                <path d="M230 78 V60"/></g>
+              <g font-family="IBM Plex Sans Arabic" text-anchor="middle">
+                <g><circle cx="110" cy="62" r="21" fill="#2F6F8F"/><text x="110" y="67" fill="#fff" font-size="15" font-weight="600">R</text>
+                  <text x="110" y="98" fill="var(--app-ink-2)" font-size="10">Rashid</text></g>
+                <g><circle cx="230" cy="62" r="21" fill="#8A5A7A"/><text x="230" y="67" fill="#fff" font-size="15" font-weight="600">U</text>
+                  <text x="230" y="98" fill="var(--app-ink-2)" font-size="10">Umm Rashid</text></g>
+                <g><circle cx="60" cy="172" r="19" fill="#B07C4A"/><text x="60" y="177" fill="#fff" font-size="13" font-weight="600">K</text>
+                  <text x="60" y="204" fill="var(--app-ink-2)" font-size="10">Khalid</text></g>
+                <g><circle cx="170" cy="172" r="19" fill="#4A806C"/><text x="170" y="177" fill="#fff" font-size="13" font-weight="600">M</text>
+                  <text x="170" y="204" fill="var(--app-ink-2)" font-size="10">Maryam</text></g>
+                <g><circle cx="280" cy="172" r="19" fill="#8A5A7A"/><text x="280" y="177" fill="#fff" font-size="13" font-weight="600">N</text>
+                  <text x="280" y="204" fill="var(--app-ink-2)" font-size="10">Noura</text></g>
+                <g><circle cx="105" cy="282" r="18" fill="#6B7A3A"/><text x="105" y="287" fill="#fff" font-size="12" font-weight="600">S</text>
+                  <text x="105" y="313" fill="var(--app-ink-2)" font-size="10">Sara</text></g>
+                <g><circle cx="235" cy="282" r="18" fill="#A6603E"/><text x="235" y="287" fill="#fff" font-size="12" font-weight="600">A</text>
+                  <text x="235" y="313" fill="var(--app-ink-2)" font-size="10">Ahmed</text></g>
+                <g><circle cx="290" cy="30" r="15" fill="none" stroke="var(--dana-500)" stroke-width="2" stroke-dasharray="4 3"/>
+                  <text x="290" y="35" fill="var(--dana-500)" font-size="14" font-weight="600">?</text>
+                  <text x="290" y="58" fill="var(--dana-500)" font-size="9.5">Saif</text></g>
+              </g>
+            </svg>
+            <div style="position:absolute;inset-inline:12px;bottom:12px" class="card tight">
+              <div class="row" style="gap:10px">
+                <div style="width:26px;height:26px;border-radius:50%;border:2px dashed var(--dana-500);
+                  display:grid;place-items:center;color:var(--dana-500);font-size:13px;font-weight:600">?</div>
+                <div class="grow"><div class="t-sm" style="font-weight:600">Saif is missing a birth year</div>
+                  <div class="xs">Ask Jeddo Rashid about him</div></div>
+                <button class="btn sm dana">Ask</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tb" data-on="roots"></div>
+      </div>
+      <div class="cap">
+        <div class="t">Family tree <span class="id">C8</span></div>
+        <div class="d"><span class="pill p-roots">Roots</span> The tree is built by talking, not by data
+          entry — so the interesting state is the <b>gap</b>. Dashed gold marks what the AI knows it
+          doesn't know, and turns it into a prompt for next week's recording. That loop, gap → question →
+          story → structure, is the engine of the whole product.</div>
+      </div>
+    </div>
+
+    <!-- C9 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen pad-b">
+          <div class="apphead"><div class="grow"><h1 style="font-size:21px">Ask the archive</h1></div></div>
+          <div class="stack" style="margin-top:8px">
+            <div class="card flat tight" style="align-self:flex-end;max-width:82%;border-radius:14px 14px 4px 14px;background:var(--ghaf-100)">
+              <div class="t-sm">How did Jeddo and Teta meet?</div>
+            </div>
+            <div class="card" style="max-width:92%">
+              <p class="t-sm" style="margin:0;line-height:1.6">Their families were neighbours on the same
+                road in Al Ain. Jeddo says he saw her at his cousin's wedding in 1971, and his mother
+                went to speak to her mother the following week.</p>
+              <div class="divider" style="margin:11px 0"></div>
+              <div class="eyebrow" style="margin-bottom:6px">He said it here</div>
+              <div class="row" style="gap:9px">
+                <div style="width:30px;height:30px;border-radius:8px;background:var(--app-brand);
+                  color:#fff;display:grid;place-items:center;font-size:11px">▶</div>
+                <div class="grow"><div class="t-sm" style="font-weight:600">How I met your grandmother</div>
+                  <div class="xs num">Jeddo Rashid · 1:08–2:40</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="grow"></div>
+          <div class="chips" style="margin-bottom:10px">
+            <div class="chip">Who is Saif?</div><div class="chip">Show me 1968</div>
+          </div>
+          <div class="card tight row" style="gap:10px;border-radius:99px;padding:11px 16px">
+            <div class="grow xs">Ask about your family…</div>
+            <div style="color:var(--app-brand)">↑</div>
+          </div>
+        </div>
+        <div class="tb" data-on="roots"></div>
+      </div>
+      <div class="cap">
+        <div class="t">Ask the archive <span class="id">C9</span></div>
+        <div class="d"><span class="pill p-roots">Roots</span> Retrieval over the family's own stories,
+          and <b>every answer must cite a story and a timestamp</b> — if it can't, it doesn't answer.
+          That single constraint is what stops a plausible sentence from becoming false family history,
+          which is the one failure this product could not survive.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+<!-- ══════════════ 4 · BONDS ══════════════ -->
+<section id="bonds">
+  <div class="sechead">
+    <span class="idx">04</span>
+    <h2>Bonds <span class="ar">روابط</span></h2>
+    <p>A closed circle, and an alert system with three settings that mean three different things.
+       Most family group chats fail because everything arrives at the same volume — so the entire
+       design problem here is <b style="color:#C9D3CF">making urgency scarce enough to be believed</b>.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- D1 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen">
+          <div class="apphead"><div class="grow"><h1>Circle</h1></div><div class="chip">✎ Post</div></div>
+          <div class="scroll">
+            <div class="card">
+              <div class="row" style="gap:10px">
+                <div class="av a4">N</div>
+                <div class="grow"><div class="t-md">Noura</div><div class="xs">2h ago</div></div>
+              </div>
+              <p class="t-sm" style="margin:10px 0 0;line-height:1.55">Mama's blood pressure was good
+                today, alhamdulillah. Dr said keep the same tablets.</p>
+              <div class="row" style="gap:14px;margin-top:11px;color:var(--app-ink-2);font-size:12.5px">
+                <span>♡ 8</span><span>💬 3</span>
+              </div>
+            </div>
+            <div class="card" style="padding:0;overflow:hidden">
+              <div style="height:112px;background:linear-gradient(135deg,#C9B79A,#8E7B5E);position:relative">
+                <div style="position:absolute;inset-inline-start:12px;bottom:10px;color:#fff">
+                  <div class="eyebrow" style="color:rgba(255,255,255,.75)">This week in Roots</div>
+                  <div class="t-md" style="color:#fff">The house in Al Ain</div>
+                </div>
+                <div style="position:absolute;inset-inline-end:12px;bottom:10px;width:32px;height:32px;
+                  border-radius:50%;background:rgba(255,255,255,.9);display:grid;place-items:center;color:#333">▶</div>
+              </div>
+              <div style="padding:12px 14px">
+                <div class="row" style="gap:9px">
+                  <div class="av s a3">R</div>
+                  <div class="grow"><div class="t-sm" style="font-weight:600">Jeddo Rashid told a new story</div>
+                    <div class="xs">4:32 · Sara recorded it</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="row" style="gap:10px">
+                <div class="av a5">S</div>
+                <div class="grow"><div class="t-md">Sara</div><div class="xs">Yesterday</div></div>
+                <div class="chip dana num">✦ +40</div>
+              </div>
+              <p class="t-sm" style="margin:10px 0 0;line-height:1.55">5 out of 5 😤 nobody knows this
+                family like me</p>
+              <div class="row" style="gap:14px;margin-top:11px;color:var(--app-ink-2);font-size:12.5px">
+                <span>♡ 11</span><span>💬 6</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tb" data-on="bonds"></div>
+      </div>
+      <div class="cap">
+        <div class="t">Circle <span class="id">D1</span></div>
+        <div class="d"><span class="pill p-bonds">Bonds</span> A closed feed, reverse-chronological,
+          <b>no algorithm and no infinite scroll</b> — it ends, because fourteen people don't generate
+          infinite content and pretending otherwise is how you get a slot machine. Story publications
+          appear here as full-width cards, so Roots feeds Bonds without either pillar needing to know
+          about the other.</div>
+      </div>
+    </div>
+
+    <!-- D2 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen">
+          <div class="apphead"><div class="grow"><h1>Messages</h1></div><div class="chip">＋</div></div>
+          <div class="scroll" style="gap:0">
+            <div class="listrow" style="gap:11px;border-inline-start:3px solid var(--nida-500);
+              padding-inline-start:11px;margin-inline-start:-14px;background:rgba(192,70,60,.05);
+              padding-block:12px;border-radius:0 10px 10px 0">
+              <div class="av a4">U</div>
+              <div class="grow"><div class="row" style="gap:7px"><div class="t-md">Umm Rashid</div>
+                <span class="badge-tier tier3">Nidā</span></div>
+                <div class="sub trunc" style="margin-top:2px">I need someone now</div></div>
+              <div class="xs num">18:42</div>
+            </div>
+            <div class="listrow" style="gap:11px">
+              <div class="av a4">N</div>
+              <div class="grow"><div class="row" style="gap:7px"><div class="t-md">Noura</div>
+                <span class="badge-tier tier2">Muhim</span></div>
+                <div class="sub trunc" style="margin-top:2px">Can you get mama's pills from the pharmacy?</div></div>
+              <div class="xs num">17:10</div>
+            </div>
+            <div class="listrow" style="gap:11px">
+              <div class="av a1">M</div>
+              <div class="grow"><div class="t-md">Everyone (14)</div>
+                <div class="sub trunc" style="margin-top:2px">Maryam: so Friday 1:30 at mama's, yes?</div></div>
+              <div class="xs num">16:20</div>
+            </div>
+            <div class="listrow" style="gap:11px">
+              <div class="av a5">S</div>
+              <div class="grow"><div class="t-md">Sara</div>
+                <div class="sub trunc" style="margin-top:2px">did you see jeddo's new story 😭</div></div>
+              <div class="xs num">14:03</div>
+            </div>
+            <div class="listrow" style="gap:11px">
+              <div class="av a2">K</div>
+              <div class="grow"><div class="t-md">Cousins (6)</div>
+                <div class="sub trunc" style="margin-top:2px">Khalid: I'll drive, meet at 12</div></div>
+              <div class="xs num">Tue</div>
+            </div>
+          </div>
+          <div class="card flat tight" style="margin:10px 0 12px">
+            <div class="row" style="gap:9px;align-items:flex-start">
+              <div class="dot d"></div>
+              <p class="xs" style="margin:0;line-height:1.5">You get <b>Nidā</b> alerts from everyone,
+                and <b>Muhim</b> from Noura and Umm Rashid only. <span style="color:var(--app-brand);font-weight:600">Change</span></p>
+            </div>
+          </div>
+        </div>
+        <div class="tb" data-on="bonds"></div>
+      </div>
+      <div class="cap">
+        <div class="t">Messages &amp; alert tiers <span class="id">D2</span></div>
+        <div class="d"><span class="pill p-bonds">Bonds</span> Three tiers: <b>ʿĀdī</b> (normal, silent),
+          <b>Muhim</b> (important, amber, breaks Do Not Disturb), <b>Nidā</b> (urgent, red, repeats until
+          acknowledged). The receiver controls which tiers each person can reach them with — Khalid's
+          stated need is "don't nag me, tell me exactly what's needed", and this is that, as a setting.</div>
+      </div>
+    </div>
+
+    <!-- D3 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen flush">
+          <div class="apphead" style="padding:8px 18px 6px;border-bottom:1px solid var(--app-line)">
+            <div class="back">←</div>
+            <div class="av s a4">N</div>
+            <div class="grow"><div class="t-md">Noura</div><div class="xs">Sister</div></div>
+            <div style="color:var(--app-ink-2)">📞</div>
+          </div>
+          <div class="scroll" style="padding:12px 18px;gap:9px">
+            <div class="card tight" style="align-self:flex-start;max-width:80%;border-radius:14px 14px 14px 4px">
+              <div class="t-sm">Are you passing by Al Wahda today?</div>
+              <div class="xs" style="margin-top:4px">17:02</div>
+            </div>
+            <div class="card tight" style="align-self:flex-end;max-width:80%;border-radius:14px 14px 4px 14px;
+              background:var(--ghaf-100);border-color:transparent">
+              <div class="t-sm">Yes around 7</div>
+              <div class="xs" style="margin-top:4px">17:08</div>
+            </div>
+            <div style="align-self:flex-start;max-width:86%;border-radius:14px 14px 14px 4px;
+              border:1.5px solid var(--amber-500);background:rgba(224,145,58,.08);padding:12px 13px">
+              <span class="badge-tier tier2">Muhim</span>
+              <div class="t-sm" style="margin-top:7px">Can you get mama's pills from the pharmacy? She has
+                two days left.</div>
+              <div class="row" style="gap:7px;margin-top:10px">
+                <button class="btn sm" style="flex:1;background:var(--amber-500);color:#231604">I'll do it</button>
+                <button class="btn sm quiet" style="flex:1">Can't</button>
+              </div>
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--app-line);padding:10px 18px 12px;background:var(--app-surface)">
+            <div class="row" style="gap:6px;margin-bottom:9px">
+              <div class="chip on">ʿĀdī</div>
+              <div class="chip amber">Muhim</div>
+              <div class="chip nida">Nidā</div>
+              <div class="grow"></div>
+              <div class="xs">Silent →</div>
+            </div>
+            <div class="card tight row" style="gap:10px;border-radius:99px;padding:10px 15px;background:var(--app-band);border-color:transparent">
+              <div class="grow xs">Message</div>
+              <div style="color:var(--app-ink-2)">🎤</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">A thread, with the tier picker <span class="id">D3</span></div>
+        <div class="d"><span class="pill p-bonds">Bonds</span> The tier selector sits <b>above the text
+          field, always visible, defaulting to silent</b> — you have to reach for urgency deliberately.
+          A Muhim message renders as a task with two answers rather than a bubble, so "I'll do it"
+          closes the loop and writes a care record instead of producing a thumbs-up nobody can act on.</div>
+      </div>
+    </div>
+
+    <!-- D4 -->
+    <div class="slot">
+      <div class="phone" style="background:var(--nida-500);--app-ink:#F7F2E9;--app-ink-2:rgba(247,242,233,.72);--app-ink-3:rgba(247,242,233,.5);--app-line:rgba(247,242,233,.16)">
+        <div class="sb" data-light="1"></div>
+        <div class="screen pad-b" style="background:var(--nida-500);padding:6px 18px 18px;color:#fff;text-align:center">
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:20px">
+            <div>
+              <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;opacity:.85">Nidā · Urgent</div>
+              <div class="av xl a4" style="margin:20px auto 0;border:3px solid rgba(255,255,255,.5)">U</div>
+              <div style="font-size:27px;font-weight:600;margin-top:14px">Umm Rashid</div>
+              <div style="font-size:19px;line-height:1.4;margin-top:8px;opacity:.95">I need someone now</div>
+              <div class="num" style="font-size:12.5px;margin-top:10px;opacity:.75">18:42 · sent to 4 people</div>
+            </div>
+            <div style="background:rgba(0,0,0,.16);border-radius:14px;padding:12px 14px;text-align:start">
+              <div class="row" style="gap:9px"><div class="dot" style="background:#fff"></div>
+                <div style="font-size:13px">Noura saw this · 18:42</div></div>
+              <div class="row" style="gap:9px;margin-top:7px;opacity:.6"><div style="width:7px;height:7px;
+                border-radius:50%;border:1.5px solid #fff"></div>
+                <div style="font-size:13px">Khalid, Maryam — no answer yet</div></div>
+              <div class="row" style="gap:9px;margin-top:7px;opacity:.6"><div style="width:7px;height:7px;
+                border-radius:50%;border:1.5px solid #fff"></div>
+                <div style="font-size:13px">Calling Khalid in 2:00 if nobody answers</div></div>
+            </div>
+          </div>
+          <div class="stack" style="gap:9px">
+            <button class="btn" style="background:#fff;color:var(--nida-500);padding:18px;font-size:17px">📞 Call her now</button>
+            <button class="btn" style="background:rgba(255,255,255,.18);color:#fff;padding:15px">I'm going — tell the others</button>
+          </div>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">Nidā, received <span class="id">D4</span></div>
+        <div class="d"><span class="pill p-bonds">Bonds</span> Full takeover, repeating, and it does not
+          dismiss until somebody answers. The escalation chain is a <b>deterministic state machine, not
+          an LLM</b> — and it's shown to the receiver so the responsibility is visible ("Khalid gets
+          called in two minutes"). Honest note for the demo: iOS Critical Alerts need an Apple
+          entitlement you won't have by September, so this ships as repeat-plus-auto-call and you say so.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════ 5 · BRANCHES ══════════════ -->
+<section id="branches">
+  <div class="sechead">
+    <span class="idx">05</span>
+    <h2>Branches <span class="ar">فروع</span></h2>
+    <p>Coordination, planning and care. Everything on these screens where being wrong has a cost —
+       availability, dosing, refill dates, escalation — is ordinary deterministic code. The AI is
+       allowed to have taste, not authority.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- E1 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen">
+          <div class="apphead"><div class="grow"><h1>August</h1><div class="sm">Al Mansoori</div></div>
+            <div class="chip">＋ Plan</div></div>
+          <div class="scroll">
+            <div class="card tight" style="padding:13px">
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center">
+                <div class="xs">S</div><div class="xs">M</div><div class="xs">T</div><div class="xs">W</div>
+                <div class="xs">T</div><div class="xs">F</div><div class="xs">S</div>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center;margin-top:7px">
+                <div class="num" style="font-size:12px;padding:6px 0;border-radius:7px;background:rgba(74,128,108,.10)">27</div>
+                <div class="num" style="font-size:12px;padding:6px 0;border-radius:7px;background:rgba(74,128,108,.28)">28</div>
+                <div class="num" style="font-size:12px;padding:6px 0;border-radius:7px;background:rgba(74,128,108,.10)">29</div>
+                <div class="num" style="font-size:12px;padding:6px 0;border-radius:7px;background:rgba(74,128,108,.45)">30</div>
+                <div class="num" style="font-size:12px;padding:6px 0;border-radius:7px;background:rgba(74,128,108,.28)">31</div>
+                <div class="num" style="font-size:12px;padding:6px 0;border-radius:7px;background:var(--ghaf-700);color:#fff;font-weight:600">1</div>
+                <div class="num" style="font-size:12px;padding:6px 0;border-radius:7px;background:var(--ghaf-700);color:#fff;font-weight:600">2</div>
+                <div class="num" style="font-size:12px;padding:6px 0;border-radius:7px;background:rgba(74,128,108,.10)">3</div>
+                <div class="num" style="font-size:12px;padding:6px 0;border-radius:7px;background:rgba(74,128,108,.28)">4</div>
+                <div class="num" style="font-size:12px;padding:6px 0;border-radius:7px;background:rgba(74,128,108,.10)">5</div>
+                <div class="num" style="font-size:12px;padding:6px 0;border-radius:7px;background:rgba(74,128,108,.45)">6</div>
+                <div class="num" style="font-size:12px;padding:6px 0;border-radius:7px;background:rgba(74,128,108,.28)">7</div>
+                <div class="num" style="font-size:12px;padding:6px 0;border-radius:7px;background:rgba(74,128,108,.62)">8</div>
+                <div class="num" style="font-size:12px;padding:6px 0;border-radius:7px;background:rgba(74,128,108,.45)">9</div>
+              </div>
+              <div class="row" style="margin-top:11px;gap:7px;align-items:center">
+                <div class="xs">Fewer free</div>
+                <div style="flex:1;height:5px;border-radius:99px;background:linear-gradient(90deg,rgba(74,128,108,.10),var(--ghaf-700))"></div>
+                <div class="xs">More free</div>
+              </div>
+            </div>
+            <div class="card flat tight">
+              <div class="row" style="gap:9px;align-items:flex-start">
+                <div class="dot k"></div>
+                <p class="xs" style="margin:0;line-height:1.5">Everyone sees <b>when</b> people are free.
+                  Nobody sees <b>why</b> anyone is busy.</p>
+              </div>
+            </div>
+            <div>
+              <div class="eyebrow" style="margin-bottom:7px">Coming up</div>
+              <div class="card tight" style="padding:2px 13px">
+                <div class="listrow"><div style="width:34px"><div class="num t-sm" style="font-weight:600">2</div><div class="xs">FRI</div></div>
+                  <div class="grow"><div class="t-sm" style="font-weight:600">Lunch at Umm Rashid's</div>
+                    <div class="xs">1:30 pm · 11 going</div></div><div class="dot"></div></div>
+                <div class="listrow"><div style="width:34px"><div class="num t-sm" style="font-weight:600">6</div><div class="xs">TUE</div></div>
+                  <div class="grow"><div class="t-sm" style="font-weight:600">Mama — clinic, Dr Hessa</div>
+                    <div class="xs">9:00 am · Noura driving</div></div><div class="dot k"></div></div>
+                <div class="listrow"><div style="width:34px"><div class="num t-sm" style="font-weight:600">8</div><div class="xs">THU</div></div>
+                  <div class="grow"><div class="t-sm" style="font-weight:600">Salalah trip — deciding</div>
+                    <div class="xs">6 of 9 voted</div></div><div class="chip dana">Vote</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tb" data-on="branches"></div>
+      </div>
+      <div class="cap">
+        <div class="t">Family calendar <span class="id">E1</span></div>
+        <div class="d"><span class="pill p-branch">Branches</span> The month is a <b>heat map of
+          collective availability</b>, not a wall of everyone's private appointments — the density of
+          green is the only thing shared. Khalid's leave, Sara's exams and Noura's shifts all feed it
+          without any of them being readable. Privacy here isn't a setting; it's the data model.</div>
+      </div>
+    </div>
+
+    <!-- E2 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen pad-b">
+          <div class="apphead"><div class="back">←</div>
+            <div class="grow"><h1 style="font-size:20px" class="ar">دلة Dalla</h1><div class="sm">Family planner</div></div></div>
+          <div class="stack" style="margin-top:8px">
+            <div class="card tight" style="align-self:flex-end;max-width:84%;border-radius:14px 14px 4px 14px;background:var(--ghaf-100);border-color:transparent">
+              <div class="t-sm">Somewhere for the whole family in the last week of August. Mama can't
+                walk far and Ahmed is 9.</div>
+            </div>
+            <div class="card">
+              <div class="t-sm" style="line-height:1.6">Three things first, then I'll look.</div>
+              <div class="divider" style="margin:11px 0"></div>
+              <div class="stack s">
+                <div class="kv" style="padding-top:0"><span class="k">Best dates</span><span class="v num">21–25 Aug</span></div>
+                <div class="kv"><span class="k">Who can come</span><span class="v">11 of 14</span></div>
+                <div class="kv"><span class="k">Khalid's leave</span><span class="v">Needs 2 weeks' notice</span></div>
+              </div>
+              <div class="card flat tight" style="margin-top:11px">
+                <p class="xs" style="margin:0;line-height:1.5">Dates come from the calendar, not from me —
+                  I only solve for who's free. <span style="color:var(--app-brand);font-weight:600">See the working</span></p>
+              </div>
+            </div>
+            <div class="card tight">
+              <div class="eyebrow">What matters most?</div>
+              <div class="chips" style="margin-top:9px">
+                <div class="chip on">Easy walking</div><div class="chip on">Something for kids</div>
+                <div class="chip">Under 8k AED</div><div class="chip">Short drive</div><div class="chip">Beach</div>
+              </div>
+            </div>
+          </div>
+          <div class="grow"></div>
+          <div class="row" style="gap:8px;align-items:center;margin-bottom:8px">
+            <div class="chip dana num">Full plan · 60 dana</div>
+            <div class="xs">or plan it yourself, free</div>
+          </div>
+          <button class="btn">Find us somewhere</button>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">Dalla, gathering constraints <span class="id">E2</span></div>
+        <div class="d"><span class="pill p-branch">Branches</span> Named for the coffee pot that sits in
+          the middle of a majlis. The dates are produced by a <b>constraint solver</b> and the assistant
+          says so — it plans, it doesn't schedule. "See the working" opens the actual availability maths.
+          Charging dana for the expensive tier is honest rate-limiting dressed as a game mechanic.</div>
+      </div>
+    </div>
+
+    <!-- E3 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen">
+          <div class="apphead"><div class="back">←</div><div class="grow"><h1 style="font-size:20px">Salalah, 21–25 Aug</h1>
+            <div class="sm">Built for 11 people · 7,400 AED</div></div></div>
+          <div class="scroll">
+            <div class="card" style="padding:0;overflow:hidden">
+              <div style="height:88px;background:linear-gradient(135deg,#4A806C,#173A2F)"></div>
+              <div style="padding:13px 15px">
+                <div class="t-md">Why here</div>
+                <p class="sub" style="margin:6px 0 0;line-height:1.55">Khareef season, so it's 24° instead
+                  of 44°. Flat corniche walks for Umm Rashid, and the hotel has a pool Ahmed won't leave.</p>
+              </div>
+            </div>
+            <div class="card tight">
+              <div class="row" style="gap:11px">
+                <div style="width:44px;height:44px;border-radius:11px;background:var(--app-band)"></div>
+                <div class="grow"><div class="t-sm" style="font-weight:600">Juweira Boutique Hotel</div>
+                  <div class="xs">4.4 ★ · step-free rooms · 3 rooms held</div></div>
+              </div>
+              <div class="divider" style="margin:11px 0"></div>
+              <div class="row" style="gap:11px">
+                <div style="width:44px;height:44px;border-radius:11px;background:var(--app-band)"></div>
+                <div class="grow"><div class="t-sm" style="font-weight:600">Wadi Darbat, day 2</div>
+                  <div class="xs">4.6 ★ · car park to viewpoint is 80 m, flat</div></div>
+              </div>
+            </div>
+            <div class="card flat tight">
+              <div class="row" style="gap:9px;align-items:flex-start">
+                <div class="dot a"></div>
+                <div class="grow"><div class="t-sm" style="font-weight:600">Khalid needs to file leave by 7 Aug</div>
+                  <div class="xs">I'll remind him on the 5th if you send this</div></div>
+              </div>
+            </div>
+            <div class="card tight">
+              <div class="eyebrow">Ratings and prices from Google</div>
+              <p class="xs" style="margin:6px 0 0;line-height:1.5">Checked today. Nothing is booked — Irth
+                never spends your money.</p>
+            </div>
+          </div>
+          <div class="row" style="gap:8px;padding:10px 0 12px">
+            <button class="btn quiet" style="flex:0 0 44%">Change it</button>
+            <button class="btn">Put it to the family</button>
+          </div>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">The plan <span class="id">E3</span></div>
+        <div class="d"><span class="pill p-branch">Branches</span> Judgement over real tool-call data —
+          every claim traces to Places, and accessibility is a first-class filter because Umm Rashid
+          was in the prompt. <b>The plan ends at a vote, not a booking.</b> An AI that spends a family's
+          money is a liability; one that produces a proposal is a Keeper's afternoon saved.</div>
+      </div>
+    </div>
+
+    <!-- E4 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen">
+          <div class="apphead"><div class="back">←</div><div class="grow"></div><div class="chip">Share ↗</div></div>
+          <div class="scroll">
+            <div>
+              <div class="chip khor">Friday 2 August</div>
+              <h1 style="font-family:var(--f-ar);font-size:26px;font-weight:500;margin:9px 0 3px">Lunch at
+                Umm Rashid's</h1>
+              <div class="sub">1:30 pm · Al Mushrif · Maryam is hosting</div>
+            </div>
+            <div class="card tight">
+              <div class="row" style="justify-content:space-between">
+                <div class="t-sm" style="font-weight:600">11 going</div>
+                <div class="xs">2 can't · 1 quiet</div>
+              </div>
+              <div class="stackav" style="margin-top:10px">
+                <div class="av s a1">M</div><div class="av s a2">K</div><div class="av s a4">N</div>
+                <div class="av s a5">S</div><div class="av s a6">A</div><div class="av s a3">R</div>
+                <div class="av s" style="background:var(--app-band);color:var(--app-ink-2)">+5</div>
+              </div>
+              <div class="row" style="gap:7px;margin-top:12px">
+                <button class="btn sm" style="flex:1">Going</button>
+                <button class="btn sm quiet" style="flex:1">Can't</button>
+              </div>
+            </div>
+            <div class="card tight">
+              <div class="eyebrow">Who's bringing what</div>
+              <div class="stack s" style="margin-top:9px">
+                <div class="row" style="gap:9px"><div class="dot"></div><div class="grow t-sm">Machboos — Maryam</div></div>
+                <div class="row" style="gap:9px"><div class="dot"></div><div class="grow t-sm">Salad — Noura</div></div>
+                <div class="row" style="gap:9px"><div style="width:7px;height:7px;border-radius:50%;border:1.5px solid var(--app-ink-3)"></div>
+                  <div class="grow t-sm" style="color:var(--app-ink-2)">Dessert — nobody yet</div>
+                  <div class="chip dana num">+10</div></div>
+              </div>
+            </div>
+            <div class="card tight">
+              <div class="eyebrow">Time — 6 of 9 voted</div>
+              <div class="stack s" style="margin-top:10px">
+                <div><div class="row" style="justify-content:space-between"><div class="t-sm">1:30 pm</div><div class="xs num">4</div></div>
+                  <div class="bar" style="margin-top:4px"><i style="width:67%"></i></div></div>
+                <div><div class="row" style="justify-content:space-between"><div class="t-sm">3:00 pm</div><div class="xs num">2</div></div>
+                  <div class="bar" style="margin-top:4px"><i style="width:33%"></i></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tb" data-on="branches"></div>
+      </div>
+      <div class="cap">
+        <div class="t">Event <span class="id">E4</span></div>
+        <div class="d"><span class="pill p-branch">Branches</span> RSVP, a bring-list, and a poll on one
+          screen because they're one conversation. The unclaimed dessert row pays dana — that's the
+          engagement layer doing real work instead of decorating, and it's the pattern to reuse: <b>points
+          attach to the thing nobody volunteers for.</b></div>
+      </div>
+    </div>
+
+    <!-- E5 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen">
+          <div class="apphead"><div class="grow"><h1 style="font-size:21px">Umm Rashid</h1>
+            <div class="sm">Care · Noura and Maryam</div></div><div class="av s a4">U</div></div>
+          <div class="scroll">
+            <div class="card" style="border-color:var(--amber-500);border-width:1.5px">
+              <div class="row" style="gap:10px">
+                <div class="dot a"></div>
+                <div class="grow"><div class="t-md">Amlodipine runs out Sunday</div>
+                  <div class="sub" style="margin-top:2px">28 tablets on 4 July, one a day, 3 left</div></div>
+              </div>
+              <div class="row" style="gap:7px;margin-top:12px">
+                <button class="btn sm" style="flex:1;background:var(--amber-500);color:#231604">Ask Khalid</button>
+                <button class="btn sm quiet" style="flex:1">I'll go</button>
+              </div>
+              <p class="xs" style="margin:10px 0 0;line-height:1.5">Counted from the pack size and the
+                date — not predicted.</p>
+            </div>
+            <div>
+              <div class="eyebrow" style="margin-bottom:7px">Today</div>
+              <div class="card tight" style="padding:2px 13px">
+                <div class="listrow"><div style="color:var(--success)">✓</div>
+                  <div class="grow"><div class="t-sm" style="font-weight:600">Morning tablets</div>
+                    <div class="xs">8:10 am · Noura marked it</div></div></div>
+                <div class="listrow"><div style="color:var(--success)">✓</div>
+                  <div class="grow"><div class="t-sm" style="font-weight:600">Walk, 15 minutes</div>
+                    <div class="xs">6:40 pm · Ahmed went with her</div></div></div>
+                <div class="listrow"><div style="width:14px;height:14px;border-radius:4px;border:1.5px solid var(--app-ink-3)"></div>
+                  <div class="grow"><div class="t-sm" style="font-weight:600">Evening tablets</div>
+                    <div class="xs">9:00 pm · Noura, then Maryam</div></div></div>
+              </div>
+            </div>
+            <div class="card flat tight">
+              <div class="eyebrow">If nobody marks it</div>
+              <div class="stack s" style="margin-top:8px">
+                <div class="row" style="gap:9px"><span class="badge-tier tier1">9:00</span><div class="grow xs">Noura is reminded</div></div>
+                <div class="row" style="gap:9px"><span class="badge-tier tier2">9:30</span><div class="grow xs">Maryam is told</div></div>
+                <div class="row" style="gap:9px"><span class="badge-tier tier3">10:00</span><div class="grow xs">Both are called</div></div>
+              </div>
+            </div>
+            <div class="card tight">
+              <p class="xs" style="margin:0;line-height:1.55">Irth records what was done and when. It does
+                not decide doses, and no part of this screen is written by AI.</p>
+            </div>
+          </div>
+        </div>
+        <div class="tb" data-on="branches"></div>
+      </div>
+      <div class="cap">
+        <div class="t">Care &amp; medication <span class="id">E5</span></div>
+        <div class="d"><span class="pill p-branch">Branches</span> <b>The screen that should win the
+          judging.</b> Refill maths is arithmetic over pack size and start date, shown openly. The
+          escalation ladder is a visible state machine with a named backup, which is exactly Noura's
+          stated fear — being the single point of failure. And the disclaimer at the bottom is the
+          product's thesis in one line: AI for language and judgement, ordinary code where being wrong
+          matters.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+<!-- ══════════════ 6 · IDENTITY & TRUST ══════════════ -->
+<section id="system">
+  <div class="sechead">
+    <span class="idx">06</span>
+    <h2>Identity &amp; trust</h2>
+    <p>Who you are inside the family, what the family has grown together, and the two screens that
+       decide whether anyone believes a word of it — privacy, and what happens when someone dies.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- F1 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen">
+          <div class="apphead"><div class="grow"></div><div class="chip">Settings</div></div>
+          <div class="scroll">
+            <div style="text-align:center;padding:4px 0 2px">
+              <div class="av xl a4" style="margin:0 auto">N</div>
+              <div class="t-lg" style="margin-top:11px">Noura Al Mansoori</div>
+              <div class="sub">Keeper · daughter, sister, mother of two</div>
+              <div class="chips" style="justify-content:center;margin-top:11px">
+                <div class="chip dana num">✦ 420 this season</div>
+                <div class="chip">🔥 <span class="num">18</span> weeks</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="eyebrow">Earned</div>
+              <div class="stack s" style="margin-top:10px">
+                <div class="row" style="gap:11px">
+                  <div style="width:34px;height:34px;border-radius:9px;background:rgba(200,162,74,.16);
+                    display:grid;place-items:center;color:var(--dana-500)">🛡</div>
+                  <div class="grow"><div class="t-sm ar" style="font-weight:600;font-size:15px">الحارس Ḥāris</div>
+                    <div class="xs">Guardian · 30 days of care, unbroken</div></div>
+                </div>
+                <div class="row" style="gap:11px">
+                  <div style="width:34px;height:34px;border-radius:9px;background:rgba(200,162,74,.16);
+                    display:grid;place-items:center;color:var(--dana-500)">👂</div>
+                  <div class="grow"><div class="t-sm ar" style="font-weight:600;font-size:15px">السامع Sāmiʿ</div>
+                    <div class="xs">Listener · 25 stories heard end to end</div></div>
+                </div>
+                <div class="row" style="gap:11px;opacity:.45">
+                  <div style="width:34px;height:34px;border-radius:9px;background:var(--app-band);
+                    display:grid;place-items:center">🔗</div>
+                  <div class="grow"><div class="t-sm ar" style="font-weight:600;font-size:15px">الواصل Wāṣil</div>
+                    <div class="xs">Connector · 26 of 31 people linked</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="card tight">
+              <div class="kv" style="padding-top:0"><span class="k">Stories recorded</span><span class="v num">7</span></div>
+              <div class="kv"><span class="k">Care days covered</span><span class="v num">142</span></div>
+              <div class="kv"><span class="k">Events planned</span><span class="v num">9</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="tb" data-on="me"></div>
+      </div>
+      <div class="cap">
+        <div class="t">Your profile <span class="id">F1</span></div>
+        <div class="d"><span class="pill p-sys">System</span> Titles are Arabic, earned, and
+          <b>non-competitive — no ranking, no comparison to anyone</b>. <span class="ar">الواصل</span>
+          <i>Wāṣil</i> references <b>ṣilat al-raḥm</b>, the maintaining of kinship ties. If you use one
+          Arabic phrase on stage, use that one: <i>Irth is an app for ṣilat al-raḥm.</i> It will land.</div>
+      </div>
+    </div>
+
+    <!-- F2 -->
+    <div class="slot">
+      <div class="phone" style="--ghaf-500:#6FA98F;--ghaf-700:#4A806C;background:var(--ghaf-900);--app-ink:#F7F2E9;--app-ink-2:rgba(247,242,233,.72);--app-ink-3:rgba(247,242,233,.5);--app-line:rgba(247,242,233,.16)">
+        <div class="sb" data-light="1"></div>
+        <div class="screen pad-b" style="background:var(--ghaf-900);padding:6px 18px 18px;color:#F7F2E9;text-align:center">
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:12px">
+            <div style="width:100%">
+              <div class="tree-mount" data-sparks="1" data-plain="1"></div>
+            </div>
+            <div>
+              <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dana-500);font-weight:600">Level 5</div>
+              <div class="ar" style="font-size:44px;font-weight:500;margin-top:6px">ظِلّ</div>
+              <div style="font-size:19px;margin-top:2px;opacity:.85">Ẓill — shade</div>
+              <p style="font-size:14.5px;line-height:1.55;margin:14px auto 0;max-width:26ch;opacity:.8">
+                Your ghaf is big enough to sit under. Fourteen of you got it here.</p>
+            </div>
+            <div style="background:rgba(247,242,233,.08);border-radius:16px;padding:14px 16px;text-align:start">
+              <div class="eyebrow" style="color:rgba(247,242,233,.5)">Newly yours</div>
+              <div class="stack s" style="margin-top:9px">
+                <div class="row" style="gap:10px"><div style="color:var(--dana-500)">✦</div>
+                  <div class="grow" style="font-size:13.5px">A family crest for the tree</div></div>
+                <div class="row" style="gap:10px"><div style="color:var(--dana-500)">✦</div>
+                  <div class="grow" style="font-size:13.5px">Story reels you can save and send</div></div>
+              </div>
+            </div>
+          </div>
+          <button class="btn dana">Tell everyone</button>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">The tree grows <span class="id">F2</span></div>
+        <div class="d"><span class="pill p-sys">System</span> The one moment gold is allowed to take
+          over the screen, and the only animation longer than 220ms. Crucially the reward is
+          <b>cosmetic and shared</b> — a crest, a reel format. Nothing core is ever behind a level:
+          not stories, not care, not chat. Levelling is a mirror, not a gate.</div>
+      </div>
+    </div>
+
+    <!-- F3 -->
+    <div class="slot">
+      <div class="phone">
+        <div class="sb"></div>
+        <div class="screen">
+          <div class="apphead"><div class="back">←</div><div class="grow"><h1 style="font-size:20px">Privacy</h1></div></div>
+          <div class="scroll">
+            <div class="card">
+              <div class="row" style="gap:11px">
+                <div class="grow"><div class="t-md">Local Mode</div>
+                  <div class="sub" style="margin-top:3px">Transcribe on this phone. No AI, so no trivia,
+                    no tree building, no archive search.</div></div>
+                <div style="width:44px;height:26px;border-radius:99px;background:var(--app-band);
+                  padding:3px;flex:0 0 auto"><div style="width:20px;height:20px;border-radius:50%;background:var(--app-ink-3)"></div></div>
+              </div>
+              <p class="xs" style="margin:11px 0 0;line-height:1.55">Some families will want this. It's a
+                real trade, and we'd rather name it than pretend it doesn't exist.</p>
+            </div>
+            <div class="card tight">
+              <div class="kv" style="padding-top:0"><span class="k">Your data lives in</span><span class="v">UAE 🇦🇪</span></div>
+              <div class="kv"><span class="k">AI processing</span><span class="v">May leave the region</span></div>
+              <div class="kv"><span class="k">Chat</span><span class="v">End-to-end encrypted</span></div>
+              <div class="kv"><span class="k">Stored files</span><span class="v num">AES-256</span></div>
+            </div>
+            <div>
+              <div class="eyebrow" style="margin-bottom:7px">Your stories</div>
+              <div class="card tight" style="padding:2px 13px">
+                <div class="listrow"><div class="grow"><div class="t-sm" style="font-weight:600">Download everything</div>
+                  <div class="xs">Audio, transcripts, photos</div></div><div style="color:var(--app-ink-3)">›</div></div>
+                <div class="listrow"><div class="grow"><div class="t-sm" style="font-weight:600;color:var(--nida-500)">Delete a story permanently</div>
+                  <div class="xs">Including the transcript, the questions made from it, and the search index</div></div>
+                  <div style="color:var(--app-ink-3)">›</div></div>
+              </div>
+            </div>
+            <div class="card flat tight">
+              <div class="eyebrow">Sensitive stories</div>
+              <p class="xs" style="margin:7px 0 0;line-height:1.55">Stories that touch illness, death,
+                divorce or conflict are flagged automatically. <b>No trivia question is ever made from
+                a flagged story.</b></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">Privacy <span class="id">F3</span></div>
+        <div class="d"><span class="pill p-sys">System</span> Written under UAE PDPL, and it admits the
+          uncomfortable line — <b>inference may leave the region</b> — instead of claiming a purity you
+          can't deliver on a student budget. Offering Local Mode as the honest alternative is stronger
+          than a promise. Deletion cascades to embeddings and generated cards, and that has to be
+          genuinely true, because a judge may ask you to demonstrate it.</div>
+      </div>
+    </div>
+
+    <!-- F4 -->
+    <div class="slot">
+      <div class="phone" style="background:var(--app-band);">
+        <div class="sb"></div>
+        <div class="screen" style="background:var(--app-band);padding:6px 18px 0">
+          <div class="apphead"><div class="back">←</div><div class="grow"></div></div>
+          <div class="scroll">
+            <div style="text-align:center;padding:10px 0 2px">
+              <div class="av xl a3" style="margin:0 auto;opacity:.9">R</div>
+              <div class="t-lg" style="margin-top:12px">Rashid Al Mansoori</div>
+              <div class="sub num" style="margin-top:2px">1951 — 2027</div>
+              <div class="chip" style="margin-top:11px;background:var(--app-surface)">In memory</div>
+            </div>
+            <div class="card">
+              <p class="t-sm" style="margin:0;line-height:1.6;text-align:center">He left <b>34 stories</b>,
+                <b class="num">6 hours</b> of his voice, and <b>212 names</b> in this tree.</p>
+            </div>
+            <div class="card tight" style="padding:2px 13px">
+              <div class="listrow"><div style="width:30px;height:30px;border-radius:8px;background:var(--app-brand);
+                color:#fff;display:grid;place-items:center;font-size:11px">▶</div>
+                <div class="grow"><div class="t-sm" style="font-weight:600">The house in Al Ain</div><div class="xs num">4:32</div></div></div>
+              <div class="listrow"><div style="width:30px;height:30px;border-radius:8px;background:var(--app-brand);
+                color:#fff;display:grid;place-items:center;font-size:11px">▶</div>
+                <div class="grow"><div class="t-sm" style="font-weight:600">How I met your grandmother</div><div class="xs num">6:11</div></div></div>
+            </div>
+            <div class="card flat tight">
+              <p class="xs" style="margin:0;line-height:1.6">His stories are kept, and can still be
+                listened to and searched. Nothing new can be posted as him, and no trivia is made from
+                him again.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">Memorial <span class="id">F4</span></div>
+        <div class="d"><span class="pill p-sys">System</span> Families will reach this screen, so it
+          gets designed rather than discovered. Content locks read-only, the profile enters a memorial
+          state, no new play cards are generated. Sand background, no gold, no celebration.
+          <b>This is the deepest meaning of the name</b> — and if you show one slide that proves you
+          took the brief seriously rather than gamified grief, show this one.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════ 7 · RTL ══════════════ -->
+<section id="rtl">
+  <div class="sechead">
+    <span class="idx">07</span>
+    <h2>Arabic &amp; RTL</h2>
+    <p>Not a translation layer bolted on in week five. Mirror the axis, not the meaning: layout,
+       icons of direction and progress all flip; clocks, media transport controls and Latin numerals
+       do not. Mixed-script lines are the normal case here, not an edge case.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- G1 -->
+    <div class="slot">
+      <div class="phone" dir="rtl">
+        <div class="sb"></div>
+        <div class="screen">
+          <div class="apphead">
+            <div class="grow"><h1>آل منصوري</h1><div class="sm">الخميس · ١٤ فردًا</div></div>
+            <div class="chip dana num">✦ 1,240</div>
+          </div>
+          <div class="scroll">
+            <div class="card" style="padding:12px 14px 14px;background:linear-gradient(175deg,var(--ghaf-100),var(--app-surface) 62%)">
+              <div class="tree-mount"></div>
+              <div class="row" style="margin-top:2px">
+                <div class="grow"><div class="t-md ar">المستوى ٤ · غاف</div>
+                  <div class="xs">٢٨٠ دانة حتى «ظِلّ»</div></div>
+                <div class="chip">٦ مستويات</div>
+              </div>
+              <div class="bar" style="margin-top:9px"><i class="dana" style="width:64%"></i></div>
+            </div>
+            <div class="card brand">
+              <div class="eyebrow" style="color:rgba(244,248,246,.6)">مجلس هذا الأسبوع</div>
+              <div class="t-lg ar" style="margin-top:4px;font-size:20px">٥ أسئلة من قصة جدو راشد</div>
+              <div class="sub" style="margin-top:3px">لعب ٩ أفراد · لم تلعب بعد</div>
+              <button class="btn dana" style="margin-top:12px">ابدأ الجولة</button>
+            </div>
+            <div>
+              <div class="eyebrow" style="margin-bottom:7px">بانتظارك</div>
+              <div class="card tight" style="padding:0 13px">
+                <div class="listrow"><span class="badge-tier tier2">مهم</span>
+                  <div class="grow"><div class="t-sm" style="font-weight:600">دواء أم راشد يحتاج استلام</div>
+                    <div class="xs">طلبت نورة · قبل ٤٠ دقيقة</div></div></div>
+                <div class="listrow"><span class="dot d"></span>
+                  <div class="grow"><div class="t-sm" style="font-weight:600">أكّد ٣ أسماء سمعناها</div>
+                    <div class="xs">من «بيت العين»</div></div><div class="chip dana num">+15</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tb" data-on="home" data-ar="1"></div>
+      </div>
+      <div class="cap">
+        <div class="t">الرئيسية · Home <span class="id">G1</span></div>
+        <div class="d"><span class="pill p-sys">RTL</span> Everything mirrors — the tab bar order, the
+          progress fill direction, the avatar stack overlap. <b>The dana count stays in Latin numerals</b>
+          because that's what UAE users actually read on a phone, while body copy uses Arabic-Indic where
+          it reads naturally. Logical CSS properties throughout: <span class="num">inset-inline-start</span>,
+          never <span class="num">left</span>.</div>
+      </div>
+    </div>
+
+    <!-- G2 -->
+    <div class="slot">
+      <div class="phone" style="background:var(--ghaf-700);--app-ink:#F7F2E9;--app-ink-2:rgba(247,242,233,.72);--app-ink-3:rgba(247,242,233,.5);--app-line:rgba(247,242,233,.16)" dir="rtl">
+        <div class="sb"></div>
+        <div class="screen pad-b" style="background:var(--ghaf-700);padding:6px 18px 16px;color:#F4F8F6">
+          <div class="apphead">
+            <div class="chip" style="background:rgba(255,255,255,.16);color:#fff">السؤال ٣ من ٥</div>
+            <div class="grow"></div>
+            <div class="stackav"><div class="av s a2" style="border-color:var(--ghaf-700)">خ</div>
+              <div class="av s a4" style="border-color:var(--ghaf-700)">ن</div>
+              <div class="av s a5" style="border-color:var(--ghaf-700)">س</div></div>
+          </div>
+          <div style="height:4px;border-radius:99px;background:rgba(255,255,255,.2);margin-top:4px">
+            <i style="display:block;height:100%;width:60%;background:var(--dana-500);border-radius:99px"></i></div>
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px">
+            <div>
+              <div class="eyebrow" style="color:rgba(255,255,255,.6)">من قصة جدو راشد</div>
+              <div class="ar" style="font-size:26px;font-weight:500;line-height:1.5;margin-top:10px">من بنى غرفة المجلس في بيت العين؟</div>
+            </div>
+            <div class="stack" style="gap:9px">
+              <div style="background:rgba(255,255,255,.12);border-radius:14px;padding:14px 16px;font-size:15.5px">عمّه سيف</div>
+              <div style="background:rgba(255,255,255,.12);border-radius:14px;padding:14px 16px;font-size:15.5px">والده</div>
+              <div style="background:rgba(255,255,255,.12);border-radius:14px;padding:14px 16px;font-size:15.5px">بنّاء من العين</div>
+              <div style="background:rgba(255,255,255,.12);border-radius:14px;padding:14px 16px;font-size:15.5px">بناها بنفسه</div>
+            </div>
+          </div>
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <div class="chip" style="background:rgba(255,255,255,.14);color:rgba(255,255,255,.85)">◀ اسمع المقطع</div>
+            <div class="xs" style="color:rgba(255,255,255,.6)">جدو لا يلعب جولته</div>
+          </div>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">مجلس · Play <span class="id">G2</span></div>
+        <div class="d"><span class="pill p-sys">RTL</span> The play arrow flips to <span class="num">◀</span>
+          — it points forward in reading order, and forward is now leftward. Question text sets in Reem
+          Kufi at a taller line-height, because Arabic needs more leading than the same Latin size and
+          using one value for both is the fastest way to make a bilingual app look cheap.</div>
+      </div>
+    </div>
+
+    <!-- G3 -->
+    <div class="slot">
+      <div class="phone" dir="rtl">
+        <div class="sb"></div>
+        <div class="screen pad-b" style="text-align:center">
+          <div class="apphead"><div class="back">→</div><div class="grow"></div><div class="chip">العربية ▾</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px">
+            <div class="card flat" style="text-align:start">
+              <div class="eyebrow">سؤال الأسبوع</div>
+              <div class="ar" style="font-size:20px;line-height:1.6;margin-top:6px">احكِ لنا عن أول بيت
+                سكنت فيه.</div>
+              <div class="row" style="margin-top:9px;gap:6px"><div class="chip">تخطَّ</div><div class="chip">احكِ ما تريد</div></div>
+            </div>
+            <div>
+              <div style="width:132px;height:132px;border-radius:50%;margin:0 auto;background:var(--nida-500);
+                display:grid;place-items:center;box-shadow:0 0 0 10px rgba(192,70,60,.12), 0 0 0 22px rgba(192,70,60,.06)">
+                <div style="width:44px;height:44px;border-radius:12px;background:#fff"></div>
+              </div>
+              <div class="num" style="font-size:28px;font-weight:500;margin-top:18px">01:47</div>
+              <div class="xs" style="margin-top:2px">أغلب القصص الجيدة حوالي دقيقتين</div>
+            </div>
+          </div>
+          <div class="row" style="gap:10px">
+            <button class="btn quiet">ابدأ من جديد</button>
+            <button class="btn">تم</button>
+          </div>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="t">التسجيل · Record <span class="id">G3</span></div>
+        <div class="d"><span class="pill p-sys">RTL</span> Back arrow flips; the record button and the
+          <span class="num">01:47</span> timer do not — a clock is not a direction. Buttons keep primary
+          at the reading-end of the row, which puts "Done" on the left in Arabic and the right in
+          English, in both cases under the thumb that's already there.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════ 8 · BUILD NOTES ══════════════ -->
+<section id="build">
+  <div class="sechead">
+    <span class="idx">08</span>
+    <h2>Building it</h2>
+    <p>Thirty-one screens is a year of work for two people. Twelve of them are the submission.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;padding:30px 0 8px">
+    <div style="background:rgba(74,128,108,.10);border:1px solid rgba(143,203,178,.3);border-radius:16px;padding:20px 22px">
+      <div class="eyebrow" style="color:#8FCBB2;margin-bottom:10px">Build first — the demo path</div>
+      <p style="font-size:13.5px;color:#B4C2BC;margin:0 0 10px;line-height:1.6">These nine screens are the
+        story you tell on stage, in order. Nothing else ships until they're finished.</p>
+      <div class="num" style="font-size:12.5px;color:#8FCBB2;line-height:2">
+        A2 · A4 · C2 · C3 · C4 · C6 · C7 · B1 · E5
+      </div>
+    </div>
+    <div style="background:rgba(200,162,74,.09);border:1px solid rgba(222,188,114,.28);border-radius:16px;padding:20px 22px">
+      <div class="eyebrow" style="color:#DEBC72;margin-bottom:10px">Build second</div>
+      <p style="font-size:13.5px;color:#B4C2BC;margin:0 0 10px;line-height:1.6">Real, but survivable as
+        static or stubbed if week four goes badly.</p>
+      <div class="num" style="font-size:12.5px;color:#DEBC72;line-height:2">
+        C8 · D2 · D3 · D4 · E1 · E4 · F1
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:20px 22px">
+      <div class="eyebrow" style="color:#A9B5B0;margin-bottom:10px">Cut without regret</div>
+      <p style="font-size:13.5px;color:#8B9992;margin:0 0 10px;line-height:1.6">Design them, screenshot
+        them, put them on a "what's next" slide. Do not build them by 1 September.</p>
+      <div class="num" style="font-size:12.5px;color:#7E8C86;line-height:2">
+        C9 · D1 · E2 · E3 · F2 · F3 · G-series polish
+      </div>
+    </div>
+    <div style="background:rgba(192,70,60,.08);border:1px solid rgba(192,70,60,.3);border-radius:16px;padding:20px 22px">
+      <div class="eyebrow" style="color:#E58B82;margin-bottom:10px">Two things to settle this week</div>
+      <p style="font-size:13.5px;color:#B4C2BC;margin:0;line-height:1.6">
+        Confirm the SMAC theme <b>in writing</b> — the published one may still be sustainability, and
+        §4 of the spec is written to score either way. And agree the DB schema on day one, then don't
+        renegotiate it: one of you owns Roots, the other owns Bonds and Branches, and shared ownership
+        of a schema mid-sprint is how two-person teams lose a week.
+      </p>
+    </div>
+  </div>
+
+  <div style="margin-top:26px;padding:22px 24px;background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.08);border-radius:16px">
+    <div class="eyebrow" style="color:#DEBC72;margin-bottom:9px">Say this out loud in the demo</div>
+    <p style="font-size:17px;color:#DDE5E1;margin:0;line-height:1.6;font-style:italic">
+      "We used AI for language and judgement, and ordinary code for anything where being wrong matters.
+      Scheduling, medication and escalation are deterministic by design."
+    </p>
+    <p style="font-size:13.5px;color:#8B9992;margin:12px 0 0;line-height:1.6">
+      Then point at E5. Most student teams put AI on everything and hope nobody asks; an engineering
+      panel is listening for exactly this sentence, and the care screen is the proof that you meant it.
+    </p>
+  </div>
+</section>
+
+<footer style="padding:44px 44px 0;color:#5F6E68;font-size:13px;border-top:1px solid rgba(255,255,255,.07);margin-top:40px">
+  Irth <span class="ar" style="color:#8B9992">إرث</span> · design system and screen set ·
+  SMAC 2026 · submission 1 September, demo day 16 September
+</footer>
+</main>
+</div>
+<style>
+body.wide .grid{grid-template-columns:repeat(auto-fill,minmax(410px,1fr))}
+body.wide .phone{max-width:430px}
+@media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important} }
+</style>
+<script>
+(function(){
+  /* ---------- status bar ---------- */
+  document.querySelectorAll('.sb').forEach(function(el){
+    el.className = 'status';
+    el.innerHTML =
+      '<span>18:42</span>'+
+      '<span style="display:flex;gap:5px;align-items:center">'+
+        '<span class="bars"><i></i><i></i><i></i><i></i></span>'+
+        '<span style="font-size:10px">5G</span>'+
+        '<span style="width:20px;height:10px;border:1.2px solid currentColor;border-radius:3px;'+
+          'padding:1.2px;display:inline-block"><span style="display:block;height:100%;width:72%;'+
+          'background:currentColor;border-radius:1px"></span></span>'+
+      '</span>';
+  });
+
+  /* ---------- tab bar ---------- */
+  var ICON = {
+    home:'M3 10.6 12 3.2l9 7.4V20a1 1 0 0 1-1 1h-4.6v-6H8.6v6H4a1 1 0 0 1-1-1z',
+    roots:'M12 3.2a2.9 2.9 0 0 1 2.9 2.9v5.6a2.9 2.9 0 0 1-5.8 0V6.1A2.9 2.9 0 0 1 12 3.2zM5.4 11.3a6.6 6.6 0 0 0 13.2 0M12 18v2.8',
+    bonds:'M20.8 11.6a7.8 7.8 0 0 1-7.8 7.8H4.3l1.9-2.9a7.8 7.8 0 1 1 14.6-4.9z',
+    branches:'M4.2 6.4a2 2 0 0 1 2-2h11.6a2 2 0 0 1 2 2v12.4a2 2 0 0 1-2 2H6.2a2 2 0 0 1-2-2zM4.2 9.4h15.6M8.4 3.2v4M15.6 3.2v4',
+    me:'M12 11.4a4.1 4.1 0 1 0 0-8.2 4.1 4.1 0 0 0 0 8.2zM4.2 20.8a7.8 7.8 0 0 1 15.6 0'
+  };
+  var LABEL = {
+    en:{home:'Home',roots:'Stories',bonds:'Circle',branches:'Plans',me:'Me'},
+    ar:{home:'الرئيسية',roots:'القصص',bonds:'الدائرة',branches:'الخطط',me:'حسابي'}
+  };
+  document.querySelectorAll('.tb').forEach(function(el){
+    var on = el.dataset.on || 'home';
+    var lang = el.dataset.ar ? 'ar' : 'en';
+    var keys = el.dataset.elder ? ['home','roots','bonds'] : ['home','roots','bonds','branches','me'];
+    var badges = {bonds:1};
+    var html = keys.map(function(k){
+      var d = ICON[k].split('M').filter(Boolean).map(function(p){return 'M'+p});
+      var paths = d.map(function(p){return '<path d="'+p+'"/>'}).join('');
+      return '<div class="tab'+(k===on?' on':'')+'">'+
+        '<svg viewBox="0 0 24 24">'+paths+'</svg>'+
+        '<span>'+(el.dataset.elder && k==='roots' ? 'Listen' : LABEL[lang][k])+'</span>'+
+        (badges[k]&&k!==on?'<span class="badge"></span>':'')+
+      '</div>';
+    }).join('');
+    el.className = 'tabbar';
+    if(el.dataset.elder){ el.style.padding = '13px 8px 9px'; }
+    el.innerHTML = html;
+    var ind = document.createElement('div');
+    ind.className = 'home-ind'; ind.innerHTML = '<i></i>';
+    el.parentNode.insertBefore(ind, el.nextSibling);
+  });
+
+  /* ---------- the ghaf tree ----------
+     Prosopis cineraria: low crooked trunk that splits early, wide flat-topped
+     canopy, airy edges. Deliberately not a lollipop. */
+  function tree(opts){
+    opts = opts || {};
+    var sparks = '';
+    if(opts.sparks){
+      var pts = [[64,52],[112,38],[168,50],[92,66],[148,62],[196,72],[40,74]];
+      sparks = '<g class="spark">' + pts.map(function(p,i){
+        var s = 3.4 - (i%3)*0.7;
+        return '<path opacity="'+(0.55+ (i%3)*0.2)+'" d="M'+p[0]+' '+(p[1]-s)+
+          ' L'+(p[0]+s)+' '+p[1]+' L'+p[0]+' '+(p[1]+s)+' L'+(p[0]-s)+' '+p[1]+' Z"/>';
+      }).join('') + '</g>';
+    }
+    return '<svg class="tree" viewBox="0 0 240 150" role="img" aria-label="The family ghaf tree">'+
+      '<g class="trunk">'+
+        '<path stroke-width="7.5" d="M120 137 C119 125 123 115 118 103"/>'+
+        '<path stroke-width="4.6" d="M118 105 C107 97 90 93 72 87"/>'+
+        '<path stroke-width="4.6" d="M119 107 C131 99 149 95 167 89"/>'+
+        '<path stroke-width="3" d="M118 103 C118 95 121 89 123 81"/>'+
+        '<path stroke-width="2.6" d="M96 96 C88 90 78 87 66 84"/>'+
+        '<path stroke-width="2.6" d="M143 95 C152 89 162 86 174 83"/>'+
+      '</g>'+
+      '<g class="canopy2">'+
+        '<ellipse cx="82" cy="77" rx="47" ry="19"/>'+
+        '<ellipse cx="158" cy="77" rx="47" ry="19"/>'+
+        '<ellipse cx="120" cy="66" rx="54" ry="22"/>'+
+      '</g>'+
+      '<g class="canopy">'+
+        '<ellipse cx="60" cy="70" rx="35" ry="15"/>'+
+        '<ellipse cx="120" cy="57" rx="47" ry="18"/>'+
+        '<ellipse cx="180" cy="70" rx="35" ry="15"/>'+
+        '<ellipse cx="94" cy="80" rx="35" ry="14"/>'+
+        '<ellipse cx="148" cy="80" rx="35" ry="14"/>'+
+      '</g>'+
+      sparks +
+      '<path class="ground" d="M66 140 H174"/>'+
+    '</svg>';
+  }
+  document.querySelectorAll('.tree-mount').forEach(function(el){
+    el.innerHTML = tree({sparks: !!el.dataset.sparks});
+    if(el.dataset.sparks){ el.querySelector('svg').style.filter='drop-shadow(0 0 14px rgba(200,162,74,.25))'; }
+  });
+
+  /* ---------- toggles ---------- */
+  var tTheme = document.getElementById('tTheme');
+  tTheme.addEventListener('click', function(){
+    var on = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', on ? 'light' : 'dark');
+    tTheme.setAttribute('aria-pressed', String(!on));
+    tTheme.textContent = on ? 'Dark' : 'Light';
+  });
+  var tGrid = document.getElementById('tGrid');
+  tGrid.addEventListener('click', function(){
+    var on = document.body.classList.toggle('wide');
+    tGrid.setAttribute('aria-pressed', String(on));
+    tGrid.textContent = on ? 'Narrow' : 'Wide';
+  });
+
+  /* ---------- scrollspy ---------- */
+  var links = Array.prototype.slice.call(document.querySelectorAll('.rail a'));
+  var map = {};
+  links.forEach(function(a){
+    var t = document.querySelector(a.getAttribute('href'));
+    if(t) map[t.id] = a;
+  });
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(a){ a.classList.remove('on'); });
+        if(map[e.target.id]) map[e.target.id].classList.add('on');
+      }
+    });
+  }, {rootMargin:'-10% 0px -75% 0px'});
+  Object.keys(map).forEach(function(id){ obs.observe(document.getElementById(id)); });
+})();
+</script>
+</body>
+</html>
