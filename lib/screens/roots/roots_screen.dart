@@ -16,6 +16,11 @@ class RootsScreen extends StatefulWidget {
 
 class _RootsScreenState extends State<RootsScreen> {
   _RootsTab _selectedTab = _RootsTab.record;
+  bool _storyGenerated = false;
+
+  void _handleStoryProcessed() {
+    setState(() => _storyGenerated = true);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +44,9 @@ class _RootsScreenState extends State<RootsScreen> {
         ),
       ),
       body: switch (_selectedTab) {
-        _RootsTab.record => const RecordingScreen(),
-        _RootsTab.tree => const FamilyTreeScreen(),
-        _RootsTab.play => const WeeklyPlayScreen(),
+        _RootsTab.record => RecordingScreen(onStoryProcessed: _handleStoryProcessed),
+        _RootsTab.tree => FamilyTreeScreen(storyGenerated: _storyGenerated),
+        _RootsTab.play => WeeklyPlayScreen(storyGenerated: _storyGenerated),
       },
     );
   }
