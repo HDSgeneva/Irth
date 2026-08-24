@@ -4,7 +4,7 @@ const fakeTimeSuggestion = TimeSuggestion(
   dayLabel: 'Thursday',
   timeRangeLabel: '6:00 PM – 7:30 PM',
   reason:
-      "Everyone's free Thursday evening — Khalid has no meetings after 5, "
+      "Everyone's free Thursday evening: Khalid has no meetings after 5, "
       "and Sara's exams finish Wednesday.",
 );
 

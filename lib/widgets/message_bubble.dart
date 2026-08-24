@@ -128,7 +128,7 @@ class _EscalationStatus extends StatelessWidget {
             ),
             const SizedBox(width: 4),
             Text(
-              escalated ? 'Escalated to $backupContactName' : 'No response — escalating in $minutesLeft min',
+              escalated ? 'Escalated to $backupContactName' : 'No response, escalating in $minutesLeft min',
               style: theme.textTheme.labelMedium?.copyWith(color: color, fontWeight: FontWeight.w600),
             ),
           ],

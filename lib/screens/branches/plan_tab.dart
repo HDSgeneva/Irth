@@ -58,7 +58,7 @@ class PlanTab extends StatelessWidget {
         _DallaActionCard(
           icon: Icons.flight_takeoff_outlined,
           title: 'Plan a trip',
-          subtitle: 'A full itinerary — flights, stay, and who needs to take leave.',
+          subtitle: 'A full itinerary: flights, stay, and who needs to take leave.',
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const PlanTripScreen()),
           ),

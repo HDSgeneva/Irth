@@ -37,7 +37,7 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
-                        "Dalla checks everyone's leave, budget and who's coming — flights, "
+                        "Dalla checks everyone's leave, budget and who's coming: flights, "
                         "a stay, and suggested leave days, in one plan.",
                         style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                         textAlign: TextAlign.center,
@@ -207,7 +207,7 @@ class _TripResult extends StatelessWidget {
                 const SizedBox(width: AppSpacing.xs),
                 Expanded(
                   child: Text(
-                    'Nothing is booked. Total estimate ${trip.totalBudgetLabel} — send this to the family to vote.',
+                    'Nothing is booked. Total estimate ${trip.totalBudgetLabel}, send this to the family to vote.',
                     style: theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                   ),
                 ),

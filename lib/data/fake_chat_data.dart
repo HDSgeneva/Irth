@@ -4,6 +4,8 @@ import '../models/chat.dart';
 
 const backupContactName = 'Uncle Tariq';
 
+const currentMemberIndex = 2;
+
 const fakeFamilyMembers = [
   FamilyMember(name: 'Mama Layla', avatarIndex: 0),
   FamilyMember(name: 'Baba Adel', avatarIndex: 1),

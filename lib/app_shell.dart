@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'screens/bonds_screen.dart';
 import 'screens/branches_screen.dart';
 import 'screens/roots/roots_screen.dart';
+import 'screens/wallet_screen.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -14,7 +15,7 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
 
-  static const _tabs = [RootsScreen(), BondsScreen(), BranchesScreen()];
+  static const _tabs = [RootsScreen(), BondsScreen(), BranchesScreen(), WalletScreen()];
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +41,11 @@ class _AppShellState extends State<AppShell> {
             icon: Icon(Icons.calendar_month_outlined),
             selectedIcon: Icon(Icons.calendar_month),
             label: 'Branches',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.account_balance_wallet_outlined),
+            selectedIcon: Icon(Icons.account_balance_wallet),
+            label: 'Wallet',
           ),
         ],
       ),
