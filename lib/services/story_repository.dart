@@ -10,7 +10,7 @@ class StoryRepository {
   static const _bucket = 'recordings';
   static const _signedUrlValiditySeconds = 60 * 60 * 24 * 365 * 10; // 10 years
 
-  Future<void> saveRecording({
+  Future<String> saveRecording({
     required String familyId,
     required String userId,
     required File audioFile,
@@ -24,10 +24,29 @@ class StoryRepository {
         .from(_bucket)
         .createSignedUrl(storagePath, _signedUrlValiditySeconds);
 
-    await _client.from('stories').insert({
-      'family_id': familyId,
-      'user_id': userId,
-      'audio_url': audioUrl,
-    });
+    final story = await _client
+        .from('stories')
+        .insert({
+          'family_id': familyId,
+          'user_id': userId,
+          'audio_url': audioUrl,
+        })
+        .select('id')
+        .single();
+
+    return story['id'] as String;
+  }
+
+  Future<String> transcribeStory(String storyId) async {
+    final response = await _client.functions.invoke(
+      'transcribe-story',
+      body: {'story_id': storyId},
+    );
+
+    if (response.status != 200) {
+      throw Exception('Transcription failed');
+    }
+
+    return response.data['transcript'] as String;
   }
 }

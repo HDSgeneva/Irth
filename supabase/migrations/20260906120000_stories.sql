@@ -26,9 +26,7 @@ create policy "Members can add stories to their family"
       select family_id from public.family_members where user_id = auth.uid()
     )
   );
-
--- Storage bucket that holds the raw story audio files.
--- Files are stored as "<family_id>/<file_name>" so folder-based policies can scope access.
+  
 insert into storage.buckets (id, name, public)
 values ('recordings', 'recordings', false)
 on conflict (id) do nothing;

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../services/story_repository.dart';
+import '../../supabase/supabase_client.dart';
 import '../../theme/app_theme.dart';
 import 'transcript_screen.dart';
 
 class ProcessingScreen extends StatefulWidget {
-  const ProcessingScreen({super.key, required this.onStoryProcessed});
+  const ProcessingScreen({super.key, required this.storyId, required this.onStoryProcessed});
 
+  final String storyId;
   final VoidCallback onStoryProcessed;
 
   @override
@@ -13,76 +16,68 @@ class ProcessingScreen extends StatefulWidget {
 }
 
 class _ProcessingScreenState extends State<ProcessingScreen> {
-  static const _steps = [
-    'Listening and writing it down',
-    'Translating to English',
-    'Finding people, places and dates',
-  ];
+  final _storyRepository = StoryRepository(supabase);
 
-  int _stepsDone = 0;
+  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    _run();
+    _transcribe();
   }
 
-  Future<void> _run() async {
-    for (var i = 0; i < _steps.length; i++) {
-      await Future.delayed(const Duration(milliseconds: 550));
+  Future<void> _transcribe() async {
+    try {
+      final transcript = await _storyRepository.transcribeStory(widget.storyId);
       if (!mounted) return;
-      setState(() => _stepsDone = i + 1);
-    }
-    await Future.delayed(const Duration(milliseconds: 400));
-    if (!mounted) return;
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => TranscriptScreen(onStoryProcessed: widget.onStoryProcessed),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (var i = 0; i < _steps.length; i++)
-                _StepRow(label: _steps[i], done: i < _stepsDone),
-            ],
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => TranscriptScreen(
+            transcript: transcript,
+            onStoryProcessed: widget.onStoryProcessed,
           ),
         ),
-      ),
-    );
+      );
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _errorMessage = 'Could not transcribe your story. Please try again.');
+    }
   }
-}
 
-class _StepRow extends StatelessWidget {
-  const _StepRow({required this.label, required this.done});
-
-  final String label;
-  final bool done;
+  void _retry() {
+    setState(() => _errorMessage = null);
+    _transcribe();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-      child: Row(
-        children: [
-          Icon(
-            done ? Icons.check_circle : Icons.radio_button_unchecked,
-            color: done ? context.appColors.success : theme.colorScheme.outline,
-            size: 20,
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Center(
+            child: _errorMessage == null
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: AppSpacing.md),
+                      Text('Transcribing your story...', style: theme.textTheme.bodyLarge),
+                    ],
+                  )
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.error_outline, color: theme.colorScheme.error, size: 40),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(_errorMessage!, textAlign: TextAlign.center, style: theme.textTheme.bodyLarge),
+                      const SizedBox(height: AppSpacing.md),
+                      OutlinedButton(onPressed: _retry, child: const Text('Try again')),
+                    ],
+                  ),
           ),
-          const SizedBox(width: AppSpacing.sm),
-          Text(label, style: theme.textTheme.bodyLarge),
-        ],
+        ),
       ),
     );
   }

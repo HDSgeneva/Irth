@@ -95,7 +95,7 @@ class _RecordingScreenState extends State<RecordingScreen> {
         throw Exception('You need to be part of a family to save a story.');
       }
 
-      await _storyRepository.saveRecording(
+      final storyId = await _storyRepository.saveRecording(
         familyId: membership.familyId,
         userId: _familyRepository.currentUser!.id,
         audioFile: File(path),
@@ -108,7 +108,10 @@ class _RecordingScreenState extends State<RecordingScreen> {
       if (!mounted) return;
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => ProcessingScreen(onStoryProcessed: widget.onStoryProcessed),
+          builder: (_) => ProcessingScreen(
+            storyId: storyId,
+            onStoryProcessed: widget.onStoryProcessed,
+          ),
         ),
       );
     } catch (_) {
