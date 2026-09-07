@@ -33,6 +33,7 @@ class _ProcessingScreenState extends State<ProcessingScreen> {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => TranscriptScreen(
+            storyId: widget.storyId,
             transcript: transcript,
             onStoryProcessed: widget.onStoryProcessed,
           ),

@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../models/story.dart';
+
 class StoryRepository {
   StoryRepository(this._client);
 
@@ -48,5 +50,18 @@ class StoryRepository {
     }
 
     return response.data['transcript'] as String;
+  }
+
+  Future<StoryDetails> extractStoryDetails(String storyId) async {
+    final response = await _client.functions.invoke(
+      'extract-story-details',
+      body: {'story_id': storyId},
+    );
+
+    if (response.status != 200) {
+      throw Exception('Detail extraction failed');
+    }
+
+    return StoryDetails.fromMap(response.data['details'] as Map<String, dynamic>);
   }
 }

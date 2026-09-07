@@ -1,5 +1,21 @@
 enum EntityType { name, place, date }
 
+class StoryDetails {
+  const StoryDetails({required this.names, required this.places, required this.dates});
+
+  final List<String> names;
+  final List<String> places;
+  final List<String> dates;
+
+  factory StoryDetails.fromMap(Map<String, dynamic> map) {
+    return StoryDetails(
+      names: List<String>.from(map['names'] as List? ?? const []),
+      places: List<String>.from(map['places'] as List? ?? const []),
+      dates: List<String>.from(map['dates'] as List? ?? const []),
+    );
+  }
+}
+
 class TranscriptSegment {
   const TranscriptSegment(this.text, [this.type]);
 
