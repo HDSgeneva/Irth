@@ -45,6 +45,8 @@ class FakeStory {
     required this.extractedPlace,
     required this.extractedYear,
     required this.trivia,
+    required this.answerAudioAsset,
+    required this.answerAudioLabel,
   });
 
   final String title;
@@ -55,4 +57,6 @@ class FakeStory {
   final String extractedPlace;
   final String extractedYear;
   final TriviaQuestion trivia;
+  final String answerAudioAsset;
+  final String answerAudioLabel;
 }

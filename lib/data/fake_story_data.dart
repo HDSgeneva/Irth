@@ -29,6 +29,8 @@ const fakeStory = FakeStory(
     options: ['Saif', 'Khalid', 'Rashid', 'A hired builder'],
     correctIndex: 0,
   ),
+  answerAudioAsset: 'audio/story_answer.wav',
+  answerAudioLabel: "Jeddo Rashid's voice · 0:04",
 );
 
 const followUpQuestions = [
