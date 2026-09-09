@@ -19,9 +19,6 @@ String entityLabel(EntityType type) {
   };
 }
 
-// Finds every occurrence of an extracted name/place/date in [text] and wraps
-// it in a colored span. Longer terms are matched first so e.g. "Al Ain"
-// wins over a shorter term that happens to be a substring of it.
 List<InlineSpan> highlightedSpans(String text, StoryDetails details, AppSemanticColors colors) {
   final entityByTerm = <String, EntityType>{
     for (final name in details.names) name.toLowerCase(): EntityType.name,
